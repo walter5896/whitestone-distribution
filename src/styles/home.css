@@ -1,0 +1,621 @@
+/* =========================
+   HOME HERO
+   Mockup direction:
+   centered luxury text + showroom image with soft fade
+========================= */
+
+.home-hero {
+  min-height: 640px;
+  display: flex;
+  align-items: center;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(248, 245, 239, 1) 0%,
+      rgba(248, 245, 239, 0.98) 30%,
+      rgba(248, 245, 239, 0.84) 44%,
+      rgba(248, 245, 239, 0.28) 61%,
+      rgba(248, 245, 239, 0) 100%
+    ),
+    url("/images/hero/stone-showroom-hero.png");
+  background-size: cover;
+  background-position: center right;
+  border-bottom: 0;
+}
+
+.hero-inner,
+.hero-grid {
+  width: min(1180px, calc(100% - 40px));
+  margin: 0 auto;
+  min-height: 640px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+/* Hide old boxed hero image if old JSX still exists */
+.home-hero .hero-image-card {
+  display: none;
+}
+
+.hero-copy {
+  width: min(100%, 560px);
+  text-align: center;
+  padding: 74px 0;
+}
+
+.hero-kicker,
+.hero-copy .eyebrow {
+  margin: 0;
+  text-align: center;
+  font-family: var(--font-heading);
+  color: var(--color-text);
+  font-size: 0.88rem;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+}
+
+.hero-rule,
+.curated-rule {
+  width: 220px;
+  height: 1px;
+  background: var(--color-gold);
+  opacity: 0.62;
+  margin: 20px auto 22px;
+  position: relative;
+}
+
+.hero-rule::after,
+.curated-rule::after {
+  content: "✦";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--color-gold);
+  background: var(--color-bg);
+  padding: 0 10px;
+  font-size: 0.7rem;
+}
+
+.hero-rule-bottom {
+  margin-top: 22px;
+  margin-bottom: 22px;
+}
+
+.hero-copy h1 {
+  max-width: 560px;
+  margin: 0 auto;
+  font-family: var(--font-heading);
+  font-size: clamp(3.35rem, 5.8vw, 5.7rem);
+  font-weight: 500;
+  line-height: 1.02;
+  text-align: center;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.hero-copy p:not(.hero-kicker):not(.eyebrow) {
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  font-size: 1.02rem;
+  line-height: 1.7;
+}
+
+.hero-actions {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-top: 32px;
+}
+
+.hero-actions .btn {
+  gap: 8px;
+}
+
+/* =========================
+   FEATURE STRIP
+   Larger, more premium icon strip
+========================= */
+
+.home-feature-strip {
+  background:
+    linear-gradient(rgba(242, 237, 228, 0.94), rgba(242, 237, 228, 0.94)),
+    radial-gradient(circle at top left, rgba(184, 137, 58, 0.08), transparent 35%);
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.feature-strip-grid {
+  width: min(1180px, calc(100% - 40px));
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.feature-strip-item {
+  display: grid;
+  grid-template-columns: 72px 1fr;
+  gap: 18px;
+  align-items: center;
+  min-height: 126px;
+  padding: 28px 30px;
+  border-right: 1px solid rgba(184, 137, 58, 0.22);
+}
+
+.feature-strip-item:last-child {
+  border-right: 0;
+}
+
+.feature-strip-icon {
+  width: 62px;
+  height: 62px;
+  display: grid;
+  place-items: center;
+  color: var(--color-gold);
+}
+
+.feature-strip-icon svg {
+  width: 48px;
+  height: 48px;
+  stroke-width: 1.45;
+}
+
+.feature-strip-content h2,
+.feature-strip-item h2 {
+  margin: 0 0 8px;
+  font-family: var(--font-heading);
+  font-size: 1.02rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-text);
+}
+
+.feature-strip-content p,
+.feature-strip-item p {
+  margin: 0;
+  max-width: 230px;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: var(--color-muted);
+}
+
+/* =========================
+   CURATED STONE SECTION
+========================= */
+
+.curated-stone-section {
+  padding: 96px 0;
+  background: var(--color-surface);
+  overflow: hidden;
+}
+
+.curated-grid {
+  width: min(1180px, calc(100% - 40px));
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 52px;
+  align-items: center;
+}
+
+.curated-copy {
+  max-width: 480px;
+}
+
+.curated-copy h2 {
+  font-family: var(--font-heading);
+  font-size: clamp(2.4rem, 5vw, 4rem);
+  line-height: 1.02;
+  font-weight: 500;
+  margin: 0;
+}
+
+.curated-copy .curated-rule {
+  margin-left: 0;
+}
+
+.curated-rule::after {
+  background: var(--color-surface);
+}
+
+.curated-copy p:not(.eyebrow) {
+  max-width: 480px;
+}
+
+.curated-copy .btn {
+  gap: 8px;
+  margin-top: 24px;
+}
+
+.stone-tile-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+}
+
+.stone-tile {
+  min-height: 260px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  border-radius: 14px;
+  border: 1px solid var(--color-border);
+  box-shadow: 0 14px 40px rgba(31, 29, 26, 0.12);
+  overflow: hidden;
+  position: relative;
+  background: #eee8dd;
+}
+
+.stone-tile img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.stone-tile::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.18));
+}
+
+.stone-tile span {
+  position: relative;
+  z-index: 1;
+  background: rgba(248, 245, 239, 0.92);
+  padding: 8px 12px;
+  border-radius: 999px;
+  margin-bottom: 14px;
+  font-weight: 800;
+  font-size: 0.82rem;
+}
+
+/* =========================
+   FEATURED SLABS
+========================= */
+
+.featured-slabs-section {
+  padding: 96px 0;
+  background: #fbfaf7;
+}
+
+.featured-header {
+  max-width: 720px;
+  margin: 0 auto 46px;
+  text-align: center;
+}
+
+.featured-header h2 {
+  font-family: var(--font-heading);
+  font-size: clamp(2.1rem, 4vw, 3.25rem);
+  font-weight: 500;
+  margin: 0 0 14px;
+}
+
+.featured-slab-grid {
+  width: min(1180px, calc(100% - 40px));
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 26px;
+}
+
+.featured-slab-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 14px 38px rgba(31, 29, 26, 0.1);
+}
+
+.featured-slab-image {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+  display: block;
+}
+
+.featured-slab-body {
+  padding: 24px;
+}
+
+.featured-slab-type {
+  color: var(--color-muted);
+  font-size: 0.84rem;
+  margin: 0 0 4px;
+}
+
+.featured-slab-card h3 {
+  margin: 0 0 16px;
+  font-size: 1.35rem;
+  font-weight: 600;
+}
+
+.featured-slab-specs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  color: var(--color-muted);
+  font-size: 0.88rem;
+  margin-bottom: 16px;
+}
+
+.featured-slab-specs span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.featured-slab-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.featured-slab-tags span {
+  background: #eee8dd;
+  color: var(--color-muted);
+  padding: 7px 10px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.featured-slab-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-gold-dark);
+  font-weight: 900;
+}
+
+/* =========================
+   DARK RESERVE CTA
+========================= */
+
+.dark-reserve-section {
+  padding: 48px 0 96px;
+  background: #fbfaf7;
+}
+
+.dark-reserve-card {
+  width: min(1180px, calc(100% - 40px));
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 120px 1fr auto;
+  gap: 34px;
+  align-items: center;
+  background:
+    linear-gradient(135deg, rgba(23, 20, 16, 0.96), rgba(23, 20, 16, 0.92)),
+    repeating-linear-gradient(
+      125deg,
+      #171410 0 30px,
+      #2b251f 31px 33px,
+      #15120f 34px 62px
+    );
+  color: white;
+  border-radius: 14px;
+  padding: 52px;
+  box-shadow: var(--shadow);
+}
+
+.dark-phone-icon {
+  width: 92px;
+  height: 92px;
+  border: 3px solid var(--color-gold);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: var(--color-gold);
+}
+
+.dark-reserve-card h2 {
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 500;
+  margin: 0 0 12px;
+  color: white;
+}
+
+.dark-reserve-card p:not(.eyebrow) {
+  color: #d7cdbf;
+  max-width: 620px;
+  margin: 0;
+}
+
+.dark-reserve-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: var(--color-gold);
+  color: white;
+  padding: 18px 28px;
+  border-radius: 999px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+/* =========================
+   AUDIENCE PATHWAYS
+========================= */
+
+.audience-section {
+  padding: 82px 0;
+  background: var(--color-surface);
+}
+
+.audience-grid {
+  width: min(1180px, calc(100% - 40px));
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.audience-card {
+  padding: 34px;
+  border-right: 1px solid var(--color-border);
+}
+
+.audience-card:last-child {
+  border-right: 0;
+}
+
+.audience-icon {
+  color: var(--color-gold);
+  margin-bottom: 22px;
+}
+
+.audience-label {
+  color: var(--color-text);
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.78rem;
+  margin-bottom: 12px;
+}
+
+.audience-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-gold-dark);
+  font-weight: 900;
+  margin-top: 14px;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 1120px) {
+  .home-hero {
+    background:
+      linear-gradient(
+        90deg,
+        rgba(248, 245, 239, 1) 0%,
+        rgba(248, 245, 239, 0.98) 45%,
+        rgba(248, 245, 239, 0.78) 70%,
+        rgba(248, 245, 239, 0.5) 100%
+      ),
+      url("/images/hero/stone-showroom-hero.png");
+    background-size: cover;
+    background-position: center;
+  }
+
+  .hero-inner,
+  .hero-grid {
+    justify-content: center;
+  }
+
+  .hero-copy {
+    max-width: 760px;
+    margin: 0 auto;
+  }
+
+  .curated-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .curated-copy {
+    max-width: 720px;
+  }
+
+  .feature-strip-grid,
+  .stone-tile-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .feature-strip-item:nth-child(2) {
+    border-right: 0;
+  }
+
+  .featured-slab-grid,
+  .audience-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .audience-card {
+    border-right: 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .audience-card:last-child {
+    border-bottom: 0;
+  }
+
+  .dark-reserve-card {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 700px) {
+  .home-hero {
+    min-height: auto;
+    background:
+      linear-gradient(
+        rgba(248, 245, 239, 0.94),
+        rgba(248, 245, 239, 0.94)
+      ),
+      url("/images/hero/stone-showroom-hero.png");
+    background-size: cover;
+    background-position: center;
+  }
+
+  .hero-inner,
+  .hero-grid {
+    min-height: auto;
+    width: min(100% - 28px, 1180px);
+  }
+
+  .home-hero,
+  .curated-stone-section,
+  .featured-slabs-section,
+  .audience-section {
+    padding: 64px 0;
+  }
+
+  .hero-copy {
+    padding: 20px 0;
+  }
+
+  .hero-copy h1 {
+    font-size: clamp(3rem, 14vw, 4.8rem);
+  }
+
+  .feature-strip-grid,
+  .curated-grid,
+  .featured-slab-grid,
+  .dark-reserve-card,
+  .audience-grid {
+    width: min(100% - 28px, 1180px);
+  }
+
+  .feature-strip-grid,
+  .stone-tile-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .feature-strip-item,
+  .feature-strip-item:nth-child(2) {
+    border-right: 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .feature-strip-item:last-child {
+    border-bottom: 0;
+  }
+
+  .dark-reserve-card {
+    padding: 34px;
+  }
+}

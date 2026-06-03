@@ -1,0 +1,206 @@
+.materials-hero {
+  padding: 88px 0;
+  background:
+    linear-gradient(90deg, rgba(248, 245, 239, 0.98), rgba(248, 245, 239, 0.72)),
+    radial-gradient(circle at top right, rgba(169, 118, 42, 0.18), transparent 35%);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.materials-hero-grid {
+  display: grid;
+  grid-template-columns: 1fr 0.85fr;
+  gap: 54px;
+  align-items: center;
+}
+
+.materials-hero h1 {
+  max-width: 900px;
+}
+
+.materials-hero p:not(.eyebrow) {
+  max-width: 720px;
+}
+
+.materials-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 30px;
+}
+
+.materials-hero-actions .btn {
+  gap: 8px;
+}
+
+.materials-hero-visual {
+  min-height: 430px;
+  border-radius: var(--radius);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.45), rgba(169, 118, 42, 0.16)),
+    repeating-linear-gradient(
+      135deg,
+      #f9f3e8 0 26px,
+      #ded6c9 27px 29px,
+      #ffffff 30px 56px
+    );
+}
+
+.materials-hero-visual span {
+  background: rgba(248, 245, 239, 0.86);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  padding: 16px 24px;
+  font-family: var(--font-heading);
+  font-size: 1.55rem;
+}
+
+.materials-section,
+.materials-inventory-section {
+  padding: 88px 0;
+  background: var(--color-surface);
+}
+
+.material-education-section {
+  padding: 88px 0;
+  background: var(--color-bg);
+}
+
+.materials-section-header {
+  max-width: 780px;
+  margin-bottom: 38px;
+}
+
+.materials-section-header h2 {
+  margin: 0 0 14px;
+  font-size: clamp(2rem, 4vw, 3.25rem);
+}
+
+.materials-section-header p {
+  margin: 0;
+}
+
+.material-page-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 18px;
+}
+
+.material-page-card {
+  min-height: 330px;
+  border-radius: var(--radius);
+  position: relative;
+  overflow: hidden;
+  color: white;
+  display: flex;
+  align-items: flex-end;
+  box-shadow: 0 14px 40px rgba(31, 29, 26, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.material-page-card-overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, transparent 10%, rgba(0, 0, 0, 0.76)),
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.18), transparent 35%);
+}
+
+.material-page-card-content {
+  position: relative;
+  z-index: 1;
+  padding: 24px;
+}
+
+.material-page-card .eyebrow {
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.material-page-card h2 {
+  margin: 0 0 10px;
+  font-size: 1.7rem;
+}
+
+.material-page-card p {
+  color: rgba(255, 255, 255, 0.82);
+  margin: 0 0 18px;
+}
+
+.material-card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: white;
+  font-weight: 850;
+}
+
+.material-notes-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+}
+
+.material-note-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 26px;
+  box-shadow: 0 12px 32px rgba(31, 29, 26, 0.06);
+}
+
+.material-note-card h3 {
+  font-size: 1.35rem;
+  margin: 0 0 12px;
+}
+
+.material-note-card p {
+  margin: 0;
+}
+
+.materials-featured-inventory {
+  display: grid;
+  gap: 24px;
+}
+
+.materials-bottom-action {
+  display: flex;
+  justify-content: center;
+  margin-top: 36px;
+}
+
+@media (max-width: 1150px) {
+  .material-page-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .material-notes-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .materials-hero-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .materials-hero-visual {
+    min-height: 320px;
+  }
+}
+
+@media (max-width: 640px) {
+  .material-page-grid,
+  .material-notes-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .materials-section,
+  .material-education-section,
+  .materials-inventory-section {
+    padding: 64px 0;
+  }
+}

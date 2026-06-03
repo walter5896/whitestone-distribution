@@ -1,0 +1,308 @@
+.fabricators-hero {
+  padding: 88px 0;
+  background:
+    linear-gradient(90deg, rgba(248, 245, 239, 0.98), rgba(248, 245, 239, 0.72)),
+    radial-gradient(circle at top right, rgba(169, 118, 42, 0.18), transparent 35%);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.fabricators-hero-grid {
+  display: grid;
+  grid-template-columns: 1fr 0.9fr;
+  gap: 54px;
+  align-items: center;
+}
+
+.fabricators-hero h1 {
+  max-width: 900px;
+}
+
+.fabricators-hero p:not(.eyebrow) {
+  max-width: 730px;
+}
+
+.fabricators-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 30px;
+}
+
+.fabricators-hero-actions .btn {
+  gap: 8px;
+}
+
+.fabricators-hero-visual {
+  min-height: 440px;
+  border-radius: var(--radius);
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  background:
+    linear-gradient(135deg, rgba(169, 118, 42, 0.28), rgba(0, 0, 0, 0.34)),
+    repeating-linear-gradient(
+      90deg,
+      #2a251e 0 28px,
+      #766246 29px 34px,
+      #171410 35px 64px
+    );
+}
+
+.fabricators-hero-visual span {
+  background: rgba(248, 245, 239, 0.9);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  padding: 16px 24px;
+  font-family: var(--font-heading);
+  font-size: 1.45rem;
+  color: var(--color-text);
+}
+
+.fabricator-benefits-section {
+  padding: 88px 0;
+  background: var(--color-surface);
+}
+
+.fabricator-section-header {
+  max-width: 820px;
+  margin-bottom: 38px;
+}
+
+.fabricator-section-header h2 {
+  margin: 0 0 14px;
+  font-size: clamp(2rem, 4vw, 3.25rem);
+}
+
+.fabricator-section-header p {
+  margin: 0;
+}
+
+.fabricator-benefits-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+.fabricator-benefit-card {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 26px;
+  box-shadow: 0 12px 32px rgba(31, 29, 26, 0.06);
+}
+
+.fabricator-benefit-icon {
+  width: 52px;
+  height: 52px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #f2eadf;
+  color: var(--color-gold-dark);
+  border: 1px solid #e4cfaa;
+  margin-bottom: 20px;
+}
+
+.fabricator-benefit-card h3 {
+  font-size: 1.35rem;
+  margin: 0 0 10px;
+}
+
+.fabricator-benefit-card p {
+  margin: 0;
+}
+
+.fabricator-workflow-section {
+  padding: 92px 0;
+  background: #171410;
+  color: white;
+}
+
+.fabricator-workflow-section p {
+  color: #d7cdbf;
+}
+
+.fabricator-workflow-grid {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 56px;
+  align-items: start;
+}
+
+.fabricator-workflow-grid h2 {
+  font-size: clamp(2rem, 4vw, 3.25rem);
+  margin: 0 0 16px;
+}
+
+.workflow-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #f6e8cf;
+  font-weight: 850;
+  margin-top: 22px;
+}
+
+.workflow-step-list {
+  display: grid;
+  gap: 16px;
+}
+
+.workflow-step-card {
+  display: grid;
+  grid-template-columns: 72px 1fr;
+  gap: 18px;
+  background: rgba(255, 255, 255, 0.055);
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: var(--radius);
+  padding: 22px;
+}
+
+.workflow-step-card > span {
+  color: var(--color-gold);
+  font-family: var(--font-heading);
+  font-size: 1.6rem;
+  font-weight: 800;
+}
+
+.workflow-step-card h3 {
+  margin: 0 0 8px;
+  font-size: 1.25rem;
+}
+
+.workflow-step-card p {
+  margin: 0;
+}
+
+.trade-access-section {
+  padding: 88px 0;
+  background: var(--color-bg);
+}
+
+.trade-access-grid {
+  display: grid;
+  grid-template-columns: 1fr 0.9fr;
+  gap: 34px;
+  align-items: stretch;
+}
+
+.trade-access-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 34px;
+  box-shadow: 0 12px 32px rgba(31, 29, 26, 0.06);
+}
+
+.trade-access-card h2 {
+  font-size: clamp(1.9rem, 4vw, 3rem);
+  margin: 0 0 16px;
+}
+
+.trade-access-card p {
+  margin: 0;
+}
+
+.trade-access-list {
+  display: grid;
+  gap: 12px;
+}
+
+.trade-access-list div {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  padding: 18px;
+  color: var(--color-text);
+  font-weight: 800;
+}
+
+.trade-access-list svg {
+  color: var(--color-gold);
+  flex: 0 0 auto;
+}
+
+.fabricator-cta-section {
+  padding: 88px 0;
+  background: var(--color-surface);
+}
+
+.fabricator-cta-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 34px;
+  background:
+    linear-gradient(135deg, rgba(248, 245, 239, 0.96), rgba(238, 231, 220, 0.96)),
+    repeating-linear-gradient(
+      120deg,
+      #f8f5ef 0 28px,
+      #e4dbce 29px 31px,
+      #f4efe7 32px 58px
+    );
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 38px;
+}
+
+.fabricator-cta-card h2 {
+  font-size: clamp(1.9rem, 4vw, 3rem);
+  margin: 0 0 12px;
+}
+
+.fabricator-cta-card p {
+  max-width: 680px;
+  margin: 0;
+}
+
+.fabricator-cta-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.fabricator-cta-actions .btn {
+  gap: 8px;
+  white-space: nowrap;
+}
+
+@media (max-width: 1000px) {
+  .fabricators-hero-grid,
+  .fabricator-workflow-grid,
+  .trade-access-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .fabricator-benefits-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .fabricator-cta-card {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 640px) {
+  .fabricator-benefits-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .workflow-step-card {
+    grid-template-columns: 1fr;
+  }
+
+  .fabricators-hero,
+  .fabricator-benefits-section,
+  .fabricator-workflow-section,
+  .trade-access-section,
+  .fabricator-cta-section {
+    padding: 64px 0;
+  }
+}
