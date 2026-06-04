@@ -1,3 +1,4 @@
+import type { Dispatch, SetStateAction } from "react";
 import type { SlabStatus } from "../../types/slab";
 
 export type InventoryFiltersState = {
@@ -5,125 +6,195 @@ export type InventoryFiltersState = {
   materialType: string;
   colorFamily: string;
   thickness: string;
+  inventoryType: string;
   status: SlabStatus | "all";
-  inventoryType: "all" | "full_slab" | "remnant";
 };
 
 type InventoryFiltersProps = {
   filters: InventoryFiltersState;
-  onChange: (filters: InventoryFiltersState) => void;
-  onReset: () => void;
+  onFiltersChange: Dispatch<SetStateAction<InventoryFiltersState>>;
+  materialOptions: string[];
+  colorOptions: string[];
 };
+
+const thicknessOptions = ["2cm", "3cm"];
+
+const inventoryTypeOptions = [
+  {
+    label: "Full Slab",
+    value: "full_slab",
+  },
+  {
+    label: "Remnant",
+    value: "remnant",
+  },
+];
+
+const statusOptions: Array<{
+  label: string;
+  value: SlabStatus | "all";
+}> = [
+  {
+    label: "All Statuses",
+    value: "all",
+  },
+  {
+    label: "Available",
+    value: "available",
+  },
+  {
+    label: "On Hold",
+    value: "on_hold",
+  },
+  {
+    label: "Limited",
+    value: "limited",
+  },
+  {
+    label: "Sold",
+    value: "sold",
+  },
+];
 
 export function InventoryFilters({
   filters,
-  onChange,
-  onReset,
+  onFiltersChange,
+  materialOptions,
+  colorOptions,
 }: InventoryFiltersProps) {
+  function updateFilter<Key extends keyof InventoryFiltersState>(
+    key: Key,
+    value: InventoryFiltersState[Key]
+  ) {
+    onFiltersChange((currentFilters) => ({
+      ...currentFilters,
+      [key]: value,
+    }));
+  }
+
+  function resetFilters() {
+    onFiltersChange({
+      search: "",
+      materialType: "all",
+      colorFamily: "all",
+      thickness: "all",
+      inventoryType: "all",
+      status: "all",
+    });
+  }
+
   return (
-    <aside className="inventory-filters">
-      <div className="filter-header">
-        <h2>Filter Inventory</h2>
-        <button type="button" onClick={onReset}>
-          Reset
-        </button>
+    <section className="inventory-filters" aria-label="Inventory filters">
+      <div className="inventory-search">
+        <label htmlFor="inventory-search">Search Inventory</label>
+        <input
+          id="inventory-search"
+          type="search"
+          placeholder="Search by stone, material, color, finish, or tag..."
+          value={filters.search}
+          onChange={(event) => updateFilter("search", event.target.value)}
+        />
       </div>
 
-      <label>
-        Search
-        <input
-          type="search"
-          placeholder="Taj Mahal, black, quartzite..."
-          value={filters.search}
-          onChange={(event) =>
-            onChange({ ...filters, search: event.target.value })
-          }
-        />
-      </label>
+      <div className="inventory-filter-grid">
+        <div className="filter-control">
+          <label htmlFor="material-filter">Material</label>
+          <select
+            id="material-filter"
+            value={filters.materialType}
+            onChange={(event) =>
+              updateFilter("materialType", event.target.value)
+            }
+          >
+            <option value="all">All Materials</option>
+            {materialOptions.map((material) => (
+              <option key={material} value={material}>
+                {material}
+              </option>
+            ))}
+          </select>
+        </div>
 
-      <label>
-        Material
-        <select
-          value={filters.materialType}
-          onChange={(event) =>
-            onChange({ ...filters, materialType: event.target.value })
-          }
-        >
-          <option value="all">All Materials</option>
-          <option value="Granite">Granite</option>
-          <option value="Quartzite">Quartzite</option>
-          <option value="Marble">Marble</option>
-          <option value="Quartz">Quartz</option>
-          <option value="Exotic Stone">Exotic Stone</option>
-        </select>
-      </label>
+        <div className="filter-control">
+          <label htmlFor="color-filter">Color Family</label>
+          <select
+            id="color-filter"
+            value={filters.colorFamily}
+            onChange={(event) =>
+              updateFilter("colorFamily", event.target.value)
+            }
+          >
+            <option value="all">All Colors</option>
+            {colorOptions.map((color) => (
+              <option key={color} value={color}>
+                {color}
+              </option>
+            ))}
+          </select>
+        </div>
 
-      <label>
-        Color Family
-        <select
-          value={filters.colorFamily}
-          onChange={(event) =>
-            onChange({ ...filters, colorFamily: event.target.value })
-          }
-        >
-          <option value="all">All Colors</option>
-          <option value="Cream / Gold">Cream / Gold</option>
-          <option value="White / Gold">White / Gold</option>
-          <option value="Black / Gold">Black / Gold</option>
-          <option value="Green / Blue">Green / Blue</option>
-        </select>
-      </label>
+        <div className="filter-control">
+          <label htmlFor="thickness-filter">Thickness</label>
+          <select
+            id="thickness-filter"
+            value={filters.thickness}
+            onChange={(event) =>
+              updateFilter("thickness", event.target.value)
+            }
+          >
+            <option value="all">All Thicknesses</option>
+            {thicknessOptions.map((thickness) => (
+              <option key={thickness} value={thickness}>
+                {thickness}
+              </option>
+            ))}
+          </select>
+        </div>
 
-      <label>
-        Thickness
-        <select
-          value={filters.thickness}
-          onChange={(event) =>
-            onChange({ ...filters, thickness: event.target.value })
-          }
-        >
-          <option value="all">All Thicknesses</option>
-          <option value="2cm">2cm</option>
-          <option value="3cm">3cm</option>
-        </select>
-      </label>
+        <div className="filter-control">
+          <label htmlFor="inventory-type-filter">Inventory Type</label>
+          <select
+            id="inventory-type-filter"
+            value={filters.inventoryType}
+            onChange={(event) =>
+              updateFilter("inventoryType", event.target.value)
+            }
+          >
+            <option value="all">All Types</option>
+            {inventoryTypeOptions.map((type) => (
+              <option key={type.value} value={type.value}>
+                {type.label}
+              </option>
+            ))}
+          </select>
+        </div>
 
-      <label>
-        Status
-        <select
-          value={filters.status}
-          onChange={(event) =>
-            onChange({
-              ...filters,
-              status: event.target.value as InventoryFiltersState["status"],
-            })
-          }
-        >
-          <option value="all">All Statuses</option>
-          <option value="available">Available</option>
-          <option value="limited">Limited</option>
-          <option value="on_hold">On Hold</option>
-          <option value="sold">Sold</option>
-        </select>
-      </label>
+        <div className="filter-control">
+          <label htmlFor="status-filter">Status</label>
+          <select
+            id="status-filter"
+            value={filters.status}
+            onChange={(event) =>
+              updateFilter(
+                "status",
+                event.target.value as InventoryFiltersState["status"]
+              )
+            }
+          >
+            {statusOptions.map((status) => (
+              <option key={status.value} value={status.value}>
+                {status.label}
+              </option>
+            ))}
+          </select>
+        </div>
 
-      <label>
-        Inventory Type
-        <select
-          value={filters.inventoryType}
-          onChange={(event) =>
-            onChange({
-              ...filters,
-              inventoryType: event.target
-                .value as InventoryFiltersState["inventoryType"],
-            })
-          }
-        >
-          <option value="all">All Inventory</option>
-          <option value="full_slab">Full Slabs</option>
-          <option value="remnant">Remnants</option>
-        </select>
-      </label>
-    </aside>
+        <div className="filter-control filter-control-button">
+          <button type="button" className="btn btn-secondary" onClick={resetFilters}>
+            Reset Filters
+          </button>
+        </div>
+      </div>
+    </section>
   );
 }
