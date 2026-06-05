@@ -97,6 +97,11 @@ export function AdminDashboard() {
           </div>
 
           <div className="admin-header-actions">
+            <Link to="/admin/inquiries" className="btn btn-primary">
+              Manage Inquiries
+              <ArrowRight size={16} />
+            </Link>
+
             <Link to="/live-inventory" className="btn btn-secondary">
               View Public Inventory
               <ArrowRight size={16} />
@@ -149,11 +154,41 @@ export function AdminDashboard() {
                 <strong>{stats.featuredSlabs}</strong>
               </article>
 
-              <article className="admin-stat-card">
+              <Link
+                to="/admin/inquiries"
+                className="admin-stat-card admin-stat-link-card"
+              >
                 <Inbox size={24} />
                 <span>New Inquiries</span>
                 <strong>{stats.newInquiries}</strong>
-              </article>
+              </Link>
+            </div>
+
+            <div className="admin-action-grid">
+              <Link to="/admin/inquiries" className="admin-action-card">
+                <Inbox size={24} />
+                <div>
+                  <span>Leads</span>
+                  <strong>Manage All Inquiries</strong>
+                  <p>
+                    View full messages, update lead status, and remove test or
+                    spam submissions.
+                  </p>
+                </div>
+                <ArrowRight size={18} />
+              </Link>
+
+              <div className="admin-action-card admin-action-card-disabled">
+                <LayoutDashboard size={24} />
+                <div>
+                  <span>Inventory</span>
+                  <strong>Manage Slabs</strong>
+                  <p>
+                    Coming next: add, edit, archive, feature, and update slab
+                    availability from the admin area.
+                  </p>
+                </div>
+              </div>
             </div>
 
             <div className="admin-grid">
@@ -198,6 +233,13 @@ export function AdminDashboard() {
                     </table>
                   </div>
                 )}
+
+                <div className="admin-panel-footer">
+                  <Link to="/admin/inquiries" className="btn btn-secondary">
+                    View All Inquiries
+                    <ArrowRight size={16} />
+                  </Link>
+                </div>
               </article>
 
               <article className="admin-panel">
@@ -232,6 +274,16 @@ export function AdminDashboard() {
                     ))}
                   </div>
                 )}
+
+                <div className="admin-panel-footer">
+                  <button
+                    type="button"
+                    className="btn btn-secondary admin-disabled-button"
+                    disabled
+                  >
+                    Inventory Manager Coming Next
+                  </button>
+                </div>
               </article>
             </div>
           </>
