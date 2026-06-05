@@ -13,6 +13,7 @@ import { NotFound } from "../pages/NotFound";
 import { AdminDashboard } from "../pages/admin/AdminDashboard";
 import { AdminLogin } from "../pages/admin/AdminLogin";
 import { AdminInquiries } from "../pages/admin/AdminInquiries";
+import { AdminSlabs } from "../pages/admin/AdminSlabs";
 import { ProtectedAdminRoute } from "../components/admin/ProtectedAdminRoute";
 
 export function AppRoutes() {
@@ -45,6 +46,15 @@ export function AppRoutes() {
           element={
             <ProtectedAdminRoute>
               <AdminInquiries />
+            </ProtectedAdminRoute>
+          }
+        />
+
+        <Route
+          path="/admin/slabs"
+          element={
+            <ProtectedAdminRoute>
+              <AdminSlabs />
             </ProtectedAdminRoute>
           }
         />

@@ -65,7 +65,6 @@ export function AdminDashboard() {
   const stats = useMemo(() => {
     const activeSlabs = slabs.filter((slab) => slab.status !== "sold");
     const featuredSlabs = slabs.filter((slab) => slab.isFeatured);
-    const newArrivals = slabs.filter((slab) => slab.isNewArrival);
     const newInquiries = inquiries.filter(
       (inquiry) => !inquiry.status || inquiry.status === "new"
     );
@@ -74,8 +73,6 @@ export function AdminDashboard() {
       totalSlabs: slabs.length,
       activeSlabs: activeSlabs.length,
       featuredSlabs: featuredSlabs.length,
-      newArrivals: newArrivals.length,
-      totalInquiries: inquiries.length,
       newInquiries: newInquiries.length,
     };
   }, [inquiries, slabs]);
@@ -97,11 +94,6 @@ export function AdminDashboard() {
           </div>
 
           <div className="admin-header-actions">
-            <Link to="/admin/inquiries" className="btn btn-primary">
-              Manage Inquiries
-              <ArrowRight size={16} />
-            </Link>
-
             <Link to="/live-inventory" className="btn btn-secondary">
               View Public Inventory
               <ArrowRight size={16} />
@@ -154,17 +146,27 @@ export function AdminDashboard() {
                 <strong>{stats.featuredSlabs}</strong>
               </article>
 
-              <Link
-                to="/admin/inquiries"
-                className="admin-stat-card admin-stat-link-card"
-              >
+              <article className="admin-stat-card">
                 <Inbox size={24} />
                 <span>New Inquiries</span>
                 <strong>{stats.newInquiries}</strong>
-              </Link>
+              </article>
             </div>
 
             <div className="admin-action-grid">
+              <Link to="/admin/slabs" className="admin-action-card">
+                <LayoutDashboard size={24} />
+                <div>
+                  <span>Inventory</span>
+                  <strong>Manage Slabs</strong>
+                  <p>
+                    Update availability, active status, featured slabs, and new
+                    arrival flags from the admin area.
+                  </p>
+                </div>
+                <ArrowRight size={18} />
+              </Link>
+
               <Link to="/admin/inquiries" className="admin-action-card">
                 <Inbox size={24} />
                 <div>
@@ -177,18 +179,6 @@ export function AdminDashboard() {
                 </div>
                 <ArrowRight size={18} />
               </Link>
-
-              <div className="admin-action-card admin-action-card-disabled">
-                <LayoutDashboard size={24} />
-                <div>
-                  <span>Inventory</span>
-                  <strong>Manage Slabs</strong>
-                  <p>
-                    Coming next: add, edit, archive, feature, and update slab
-                    availability from the admin area.
-                  </p>
-                </div>
-              </div>
             </div>
 
             <div className="admin-grid">
@@ -276,13 +266,10 @@ export function AdminDashboard() {
                 )}
 
                 <div className="admin-panel-footer">
-                  <button
-                    type="button"
-                    className="btn btn-secondary admin-disabled-button"
-                    disabled
-                  >
-                    Inventory Manager Coming Next
-                  </button>
+                  <Link to="/admin/slabs" className="btn btn-secondary">
+                    Manage Inventory
+                    <ArrowRight size={16} />
+                  </Link>
                 </div>
               </article>
             </div>
