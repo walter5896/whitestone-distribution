@@ -1,14 +1,80 @@
+import { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { SlabDetailsPanel } from "../components/inventory/SlabDetailsPanel";
 import { SlabImageGallery } from "../components/inventory/SlabImageGallery";
 import { InventoryCard } from "../components/inventory/InventoryCard";
-import { mockSlabs } from "../data/mockSlabs";
+import { getActiveSlabs, getSlabBySlug } from "../lib/slabQueries";
+import type { Slab } from "../types/slab";
 
 export function SlabDetail() {
   const { slug } = useParams();
 
-  const slab = mockSlabs.find((item) => item.slug === slug);
+  const [slab, setSlab] = useState<Slab | null>(null);
+  const [allSlabs, setAllSlabs] = useState<Slab[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  useEffect(() => {
+    async function loadSlabDetail() {
+      if (!slug) {
+        setIsLoading(false);
+        setErrorMessage("Missing slab link.");
+        return;
+      }
+
+      try {
+        setIsLoading(true);
+        setErrorMessage("");
+
+        const [selectedSlab, activeSlabs] = await Promise.all([
+          getSlabBySlug(slug),
+          getActiveSlabs(),
+        ]);
+
+        setSlab(selectedSlab);
+        setAllSlabs(activeSlabs);
+      } catch (error) {
+        console.error("Failed to load slab detail:", error);
+        setSlab(null);
+        setErrorMessage(
+          "This slab could not be loaded. It may have been removed, sold, or the link may no longer be valid."
+        );
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    loadSlabDetail();
+  }, [slug]);
+
+  const similarSlabs = useMemo(() => {
+    if (!slab) {
+      return [];
+    }
+
+    return allSlabs
+      .filter(
+        (item) =>
+          item.id !== slab.id &&
+          (item.materialType === slab.materialType ||
+            item.colorFamily === slab.colorFamily ||
+            item.styleTags.some((tag) => slab.styleTags.includes(tag)))
+      )
+      .slice(0, 3);
+  }, [allSlabs, slab]);
+
+  if (isLoading) {
+    return (
+      <section className="page-section">
+        <div className="container">
+          <p className="eyebrow">Loading Slab</p>
+          <h1>Loading slab details...</h1>
+          <p>Pulling current slab information from live inventory.</p>
+        </div>
+      </section>
+    );
+  }
 
   if (!slab) {
     return (
@@ -17,7 +83,8 @@ export function SlabDetail() {
           <p className="eyebrow">Slab Not Found</p>
           <h1>This slab could not be found.</h1>
           <p>
-            It may have been removed, sold, or the link may no longer be valid.
+            {errorMessage ||
+              "It may have been removed, sold, or the link may no longer be valid."}
           </p>
           <Link to="/live-inventory" className="btn btn-primary">
             Back to Live Inventory
@@ -26,16 +93,6 @@ export function SlabDetail() {
       </section>
     );
   }
-
-  const similarSlabs = mockSlabs
-    .filter(
-      (item) =>
-        item.id !== slab.id &&
-        (item.materialType === slab.materialType ||
-          item.colorFamily === slab.colorFamily ||
-          item.styleTags.some((tag) => slab.styleTags.includes(tag)))
-    )
-    .slice(0, 3);
 
   return (
     <>

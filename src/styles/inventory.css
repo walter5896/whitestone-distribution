@@ -80,7 +80,7 @@
   background: #fbf4e7;
   border: 1px solid #e2cda6;
   color: var(--color-gold-dark);
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   padding: 16px 18px;
   margin-bottom: 22px;
 }
@@ -106,7 +106,7 @@
 .inventory-filters {
   background: #fbf8f2;
   border: 1px solid var(--color-border);
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   padding: 20px;
   box-shadow: 0 12px 30px rgba(31, 29, 26, 0.055);
 }
@@ -163,7 +163,7 @@
   width: 100%;
   min-height: 44px;
   border: 1px solid var(--color-border);
-  border-radius: 7px;
+  border-radius: var(--radius);
   background: white;
   color: var(--color-text);
   padding: 11px 12px;
@@ -193,7 +193,7 @@
   min-height: 44px;
   margin-top: 6px;
   border: 1px solid var(--color-gold);
-  border-radius: 7px;
+  border-radius: var(--radius);
   background: transparent;
   color: var(--color-gold-dark);
   font: inherit;
@@ -213,7 +213,7 @@
   margin-top: 18px;
   padding: 18px;
   border: 1px solid var(--color-border);
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   background: #fffdf9;
 }
 
@@ -240,7 +240,7 @@
   min-height: 40px;
   padding: 0 14px;
   border: 1px solid var(--color-gold);
-  border-radius: 7px;
+  border-radius: var(--radius);
   color: var(--color-gold-dark);
   font-weight: 900;
 }
@@ -288,7 +288,7 @@
   min-width: 165px;
   min-height: 44px;
   border: 1px solid var(--color-border);
-  border-radius: 7px;
+  border-radius: var(--radius);
   background: white;
   color: var(--color-text);
   padding: 0 12px;
@@ -323,7 +323,7 @@
   grid-template-columns: 310px minmax(0, 1fr);
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   overflow: hidden;
   box-shadow: 0 12px 34px rgba(31, 29, 26, 0.08);
 }
@@ -380,7 +380,6 @@
   line-height: 1.7;
 }
 
-/* Detail/spec pills inside cards */
 .inventory-spec-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -397,7 +396,7 @@
   text-align: center;
   background: #fbf8f2;
   border: 1px solid var(--color-border);
-  border-radius: 7px;
+  border-radius: var(--radius);
   color: var(--color-text);
   font-weight: 800;
   font-size: 0.84rem;
@@ -415,7 +414,7 @@
   color: var(--color-gold-dark);
   border: 1px solid #e4cfaa;
   padding: 7px 10px;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   font-size: 0.76rem;
   font-weight: 900;
 }
@@ -428,7 +427,7 @@
 
 .inventory-list-actions .btn {
   gap: 8px;
-  border-radius: 7px;
+  border-radius: var(--radius);
 }
 
 /* =========================
@@ -439,7 +438,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   padding: 7px 10px;
   font-size: 0.7rem;
   font-weight: 900;
@@ -474,7 +473,7 @@
 .inventory-empty {
   padding: 56px;
   border: 1px dashed var(--color-border);
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   text-align: center;
   background: #fbf8f2;
 }
@@ -491,7 +490,6 @@
 
 /* =========================
    SQUARE PREMIUM OVERRIDES
-   Scoped mostly to inventory/detail pages
 ========================= */
 
 .inventory-page-section .btn,
@@ -505,7 +503,7 @@
 .slab-detail-page input,
 .slab-detail-page select,
 .slab-detail-page textarea {
-  border-radius: 7px;
+  border-radius: var(--radius);
 }
 
 .inventory-page-section .btn-primary,
@@ -514,7 +512,7 @@
 .inventory-page .btn-secondary,
 .slab-detail-page .btn-primary,
 .slab-detail-page .btn-secondary {
-  border-radius: 7px;
+  border-radius: var(--radius);
 }
 
 /* =========================
@@ -549,7 +547,7 @@
 
 .slab-gallery-main {
   min-height: 620px;
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   box-shadow: var(--shadow);
   border: 1px solid var(--color-border);
   display: grid;
@@ -576,7 +574,7 @@
   z-index: 1;
   background: rgba(248, 245, 239, 0.86);
   border: 1px solid var(--color-border);
-  border-radius: 7px;
+  border-radius: var(--radius);
   padding: 16px 24px;
   font-family: var(--font-heading);
   font-size: 1.5rem;
@@ -591,7 +589,7 @@
 
 .slab-thumb {
   min-height: 130px;
-  border-radius: 8px;
+  border-radius: var(--radius);
   border: 1px solid var(--color-border);
   box-shadow: 0 10px 26px rgba(31, 29, 26, 0.08);
 }
@@ -628,7 +626,7 @@
 .slab-spec-list div {
   background: #fbf8f2;
   border: 1px solid var(--color-border);
-  border-radius: 8px;
+  border-radius: var(--radius);
   padding: 16px;
 }
 
@@ -650,7 +648,7 @@
 .slab-tags-block {
   background: #fbf8f2;
   border: 1px solid var(--color-border);
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   padding: 18px;
 }
 
@@ -667,11 +665,17 @@
 }
 
 .slab-action-card {
-  background: #171410;
+  background: var(--color-black);
   color: white;
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   padding: 24px;
   box-shadow: var(--shadow);
+}
+
+.slab-action-card h2,
+.slab-action-card h3,
+.slab-action-card .eyebrow {
+  color: white;
 }
 
 .slab-action-card h2 {
@@ -694,9 +698,25 @@
   gap: 8px;
 }
 
+.slab-action-card .btn-primary {
+  background: var(--color-gold);
+  color: white;
+  border-color: var(--color-gold);
+}
+
+.slab-action-card .btn-primary:hover {
+  background: var(--color-gold-dark);
+  border-color: var(--color-gold-dark);
+}
+
 .slab-action-card .btn-secondary {
   color: #f6e8cf;
   border-color: rgba(246, 232, 207, 0.45);
+  background: transparent;
+}
+
+.slab-action-card .btn-secondary:hover {
+  background: rgba(246, 232, 207, 0.08);
 }
 
 .similar-slabs-section {
