@@ -712,6 +712,86 @@
 }
 
 /* =========================
+   ADMIN SLAB EDIT FORM
+========================= */
+
+.admin-slab-edit-form {
+  margin-top: 22px;
+  padding-top: 22px;
+  border-top: 1px solid var(--color-border);
+}
+
+.admin-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.admin-form-grid label {
+  display: grid;
+  gap: 8px;
+  color: var(--color-text);
+  font-size: 0.74rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.admin-form-grid input,
+.admin-form-grid select,
+.admin-form-grid textarea {
+  width: 100%;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: white;
+  color: var(--color-text);
+  padding: 13px 14px;
+  font: inherit;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.admin-form-grid input,
+.admin-form-grid select {
+  min-height: var(--input-height);
+}
+
+.admin-form-grid textarea {
+  resize: vertical;
+  line-height: 1.6;
+}
+
+.admin-form-grid input:focus,
+.admin-form-grid select:focus,
+.admin-form-grid textarea:focus {
+  outline: 2px solid rgba(184, 137, 58, 0.22);
+  border-color: var(--color-gold);
+}
+
+.admin-form-span-2 {
+  grid-column: span 2;
+}
+
+.admin-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+
+.admin-form-actions .btn {
+  gap: 8px;
+}
+
+.admin-form-actions .btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.72;
+  transform: none;
+}
+
+/* =========================
    RESPONSIVE
 ========================= */
 
@@ -793,12 +873,18 @@
   }
 
   .admin-inquiry-contact-grid,
-  .admin-slab-management-specs {
+  .admin-slab-management-specs,
+  .admin-form-grid {
     grid-template-columns: 1fr;
   }
 
+  .admin-form-span-2 {
+    grid-column: auto;
+  }
+
   .admin-inquiry-actions,
-  .admin-slab-management-controls {
+  .admin-slab-management-controls,
+  .admin-form-actions {
     align-items: stretch;
     flex-direction: column;
   }
@@ -808,7 +894,8 @@
   .admin-inquiry-actions .btn,
   .admin-slab-management-controls label,
   .admin-slab-management-controls select,
-  .admin-slab-management-controls .btn {
+  .admin-slab-management-controls .btn,
+  .admin-form-actions .btn {
     width: 100%;
   }
 }
