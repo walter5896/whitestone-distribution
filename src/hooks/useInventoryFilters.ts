@@ -1,14 +1,15 @@
 import { useMemo, useState } from "react";
-import type { Slab } from "../types/slab";
 import type { InventoryFiltersState } from "../components/inventory/InventoryFilters";
+import type { Slab } from "../types/slab";
 
 const defaultFilters: InventoryFiltersState = {
   search: "",
   materialType: "all",
   colorFamily: "all",
   thickness: "all",
-  status: "all",
   inventoryType: "all",
+  finish: "all",
+  status: "all",
 };
 
 export function useInventoryFilters(slabs: Slab[]) {
@@ -18,12 +19,23 @@ export function useInventoryFilters(slabs: Slab[]) {
     const searchTerm = filters.search.trim().toLowerCase();
 
     return slabs.filter((slab) => {
+      const searchableText = [
+        slab.name,
+        slab.materialType,
+        slab.colorFamily,
+        slab.thickness,
+        slab.dimensions,
+        slab.finish,
+        slab.status,
+        slab.inventoryType,
+        slab.description,
+        ...slab.styleTags,
+      ]
+        .join(" ")
+        .toLowerCase();
+
       const matchesSearch =
-        !searchTerm ||
-        slab.name.toLowerCase().includes(searchTerm) ||
-        slab.materialType.toLowerCase().includes(searchTerm) ||
-        slab.colorFamily.toLowerCase().includes(searchTerm) ||
-        slab.styleTags.some((tag) => tag.toLowerCase().includes(searchTerm));
+        !searchTerm || searchableText.includes(searchTerm);
 
       const matchesMaterial =
         filters.materialType === "all" ||
@@ -36,20 +48,24 @@ export function useInventoryFilters(slabs: Slab[]) {
       const matchesThickness =
         filters.thickness === "all" || slab.thickness === filters.thickness;
 
-      const matchesStatus =
-        filters.status === "all" || slab.status === filters.status;
-
       const matchesInventoryType =
         filters.inventoryType === "all" ||
         slab.inventoryType === filters.inventoryType;
+
+      const matchesFinish =
+        filters.finish === "all" || slab.finish === filters.finish;
+
+      const matchesStatus =
+        filters.status === "all" || slab.status === filters.status;
 
       return (
         matchesSearch &&
         matchesMaterial &&
         matchesColor &&
         matchesThickness &&
-        matchesStatus &&
-        matchesInventoryType
+        matchesInventoryType &&
+        matchesFinish &&
+        matchesStatus
       );
     });
   }, [filters, slabs]);

@@ -1,8 +1,12 @@
+/* =========================
+   MATERIALS HERO
+========================= */
+
 .materials-hero {
-  padding: 88px 0;
+  padding: var(--section-padding) 0;
   background:
-    linear-gradient(90deg, rgba(248, 245, 239, 0.98), rgba(248, 245, 239, 0.72)),
-    radial-gradient(circle at top right, rgba(169, 118, 42, 0.18), transparent 35%);
+    linear-gradient(90deg, rgba(248, 245, 239, 0.98), rgba(248, 245, 239, 0.78)),
+    radial-gradient(circle at top right, rgba(169, 118, 42, 0.16), transparent 35%);
   border-bottom: 1px solid var(--color-border);
 }
 
@@ -15,6 +19,10 @@
 
 .materials-hero h1 {
   max-width: 900px;
+  font-size: var(--type-page-title);
+  line-height: var(--line-tight);
+  letter-spacing: var(--tracking-heading);
+  text-transform: uppercase;
 }
 
 .materials-hero p:not(.eyebrow) {
@@ -30,11 +38,12 @@
 
 .materials-hero-actions .btn {
   gap: 8px;
+  border-radius: var(--radius);
 }
 
 .materials-hero-visual {
   min-height: 430px;
-  border-radius: var(--radius);
+  border-radius: var(--radius-md);
   border: 1px solid var(--color-border);
   box-shadow: var(--shadow);
   display: grid;
@@ -51,22 +60,28 @@
 }
 
 .materials-hero-visual span {
-  background: rgba(248, 245, 239, 0.86);
+  background: rgba(248, 245, 239, 0.88);
   border: 1px solid var(--color-border);
-  border-radius: 999px;
+  border-radius: var(--radius-sm);
   padding: 16px 24px;
   font-family: var(--font-heading);
   font-size: 1.55rem;
+  font-weight: 500;
+  color: var(--color-text);
 }
+
+/* =========================
+   SECTIONS
+========================= */
 
 .materials-section,
 .materials-inventory-section {
-  padding: 88px 0;
+  padding: var(--section-padding) 0;
   background: var(--color-surface);
 }
 
 .material-education-section {
-  padding: 88px 0;
+  padding: var(--section-padding) 0;
   background: var(--color-bg);
 }
 
@@ -77,12 +92,18 @@
 
 .materials-section-header h2 {
   margin: 0 0 14px;
-  font-size: clamp(2rem, 4vw, 3.25rem);
+  font-size: var(--type-section-title);
+  line-height: var(--line-heading);
+  font-weight: 500;
 }
 
 .materials-section-header p {
   margin: 0;
 }
+
+/* =========================
+   MATERIAL CARDS
+========================= */
 
 .material-page-grid {
   display: grid;
@@ -92,7 +113,7 @@
 
 .material-page-card {
   min-height: 330px;
-  border-radius: var(--radius);
+  border-radius: var(--radius-md);
   position: relative;
   overflow: hidden;
   color: white;
@@ -117,16 +138,18 @@
 }
 
 .material-page-card .eyebrow {
-  color: rgba(255, 255, 255, 0.82);
+  color: rgba(255, 255, 255, 0.84);
 }
 
 .material-page-card h2 {
   margin: 0 0 10px;
-  font-size: 1.7rem;
+  font-size: clamp(1.5rem, 2vw, 1.9rem);
+  line-height: 1.05;
+  font-weight: 600;
 }
 
 .material-page-card p {
-  color: rgba(255, 255, 255, 0.82);
+  color: rgba(255, 255, 255, 0.84);
   margin: 0 0 18px;
 }
 
@@ -135,8 +158,12 @@
   align-items: center;
   gap: 8px;
   color: white;
-  font-weight: 850;
+  font-weight: 900;
 }
+
+/* =========================
+   MATERIAL EDUCATION NOTES
+========================= */
 
 .material-notes-grid {
   display: grid;
@@ -147,19 +174,25 @@
 .material-note-card {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius);
+  border-radius: var(--radius-md);
   padding: 26px;
   box-shadow: 0 12px 32px rgba(31, 29, 26, 0.06);
 }
 
 .material-note-card h3 {
-  font-size: 1.35rem;
+  font-size: var(--type-card-title);
+  line-height: 1.12;
+  font-weight: 600;
   margin: 0 0 12px;
 }
 
 .material-note-card p {
   margin: 0;
 }
+
+/* =========================
+   FEATURED INVENTORY
+========================= */
 
 .materials-featured-inventory {
   display: grid;
@@ -171,6 +204,37 @@
   justify-content: center;
   margin-top: 36px;
 }
+
+.materials-bottom-action .btn {
+  border-radius: var(--radius);
+}
+
+/* =========================
+   PREMIUM SQUARED OVERRIDES
+========================= */
+
+.materials-hero .btn,
+.materials-section .btn,
+.material-education-section .btn,
+.materials-inventory-section .btn,
+.materials-hero button,
+.materials-section button,
+.material-education-section button,
+.materials-inventory-section button {
+  border-radius: var(--radius);
+}
+
+.materials-hero-visual,
+.material-page-card,
+.material-note-card,
+.material-card,
+.materials-featured-inventory article {
+  border-radius: var(--radius-md);
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
 
 @media (max-width: 1150px) {
   .material-page-grid {
@@ -193,6 +257,14 @@
 }
 
 @media (max-width: 640px) {
+  .materials-hero {
+    padding: var(--section-padding-sm) 0;
+  }
+
+  .materials-hero h1 {
+    font-size: clamp(2.45rem, 12vw, 4rem);
+  }
+
   .material-page-grid,
   .material-notes-grid {
     grid-template-columns: 1fr;
@@ -201,6 +273,14 @@
   .materials-section,
   .material-education-section,
   .materials-inventory-section {
-    padding: 64px 0;
+    padding: var(--section-padding-sm) 0;
+  }
+
+  .materials-hero-actions {
+    flex-direction: column;
+  }
+
+  .materials-hero-actions .btn {
+    width: 100%;
   }
 }

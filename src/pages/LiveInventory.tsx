@@ -12,14 +12,18 @@ const defaultFilters: InventoryFiltersState = {
   colorFamily: "all",
   thickness: "all",
   inventoryType: "all",
+  finish: "all",
   status: "all",
 };
+
+type SortOption = "newest" | "name-asc" | "name-desc";
 
 export function LiveInventory() {
   const [slabs, setSlabs] = useState<Slab[]>([]);
   const [filters, setFilters] = useState<InventoryFiltersState>(defaultFilters);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
+  const [sortBy, setSortBy] = useState<SortOption>("newest");
 
   useEffect(() => {
     async function loadSlabs() {
@@ -50,6 +54,24 @@ export function LiveInventory() {
 
   const colorOptions = useMemo(() => {
     return Array.from(new Set(slabs.map((slab) => slab.colorFamily)))
+      .filter(Boolean)
+      .sort();
+  }, [slabs]);
+
+  const thicknessOptions = useMemo(() => {
+    return Array.from(new Set(slabs.map((slab) => slab.thickness)))
+      .filter(Boolean)
+      .sort();
+  }, [slabs]);
+
+  const inventoryTypeOptions = useMemo(() => {
+    return Array.from(new Set(slabs.map((slab) => slab.inventoryType)))
+      .filter(Boolean)
+      .sort();
+  }, [slabs]);
+
+  const finishOptions = useMemo(() => {
+    return Array.from(new Set(slabs.map((slab) => slab.finish)))
       .filter(Boolean)
       .sort();
   }, [slabs]);
@@ -91,6 +113,9 @@ export function LiveInventory() {
         filters.inventoryType === "all" ||
         slab.inventoryType === filters.inventoryType;
 
+      const matchesFinish =
+        filters.finish === "all" || slab.finish === filters.finish;
+
       const matchesStatus =
         filters.status === "all" || slab.status === filters.status;
 
@@ -100,54 +125,123 @@ export function LiveInventory() {
         matchesColor &&
         matchesThickness &&
         matchesInventoryType &&
+        matchesFinish &&
         matchesStatus
       );
     });
   }, [slabs, filters]);
 
+  const sortedSlabs = useMemo(() => {
+    const cloned = [...filteredSlabs];
+
+    if (sortBy === "name-asc") {
+      cloned.sort((a, b) => a.name.localeCompare(b.name));
+    }
+
+    if (sortBy === "name-desc") {
+      cloned.sort((a, b) => b.name.localeCompare(a.name));
+    }
+
+    if (sortBy === "newest") {
+      cloned.sort((a, b) => {
+        if (a.isFeatured !== b.isFeatured) {
+          return Number(b.isFeatured) - Number(a.isFeatured);
+        }
+
+        if (a.isNewArrival !== b.isNewArrival) {
+          return Number(b.isNewArrival) - Number(a.isNewArrival);
+        }
+
+        return a.name.localeCompare(b.name);
+      });
+    }
+
+    return cloned;
+  }, [filteredSlabs, sortBy]);
+
   return (
     <>
-      <section className="page-hero inventory-hero">
-        <div className="container page-hero-inner">
-          <p className="eyebrow">Live Inventory</p>
-          <h1>Browse Current Stone Slabs</h1>
-          <p>
-            View available inventory, compare materials, and call directly for
-            current pricing, availability, and reservation details.
-          </p>
+      <section className="inventory-page-hero">
+        <div className="container">
+          <div className="inventory-page-hero-copy">
+            <p className="eyebrow">Live Inventory</p>
+            <h1>Browse Current Stone Slabs</h1>
+            <p>
+              View available inventory, compare materials, and call directly
+              for current pricing, availability, and reservation details.
+            </p>
+          </div>
         </div>
       </section>
 
       <section className="inventory-page-section">
         <div className="container">
-          <PricingNotice />
-
-          <InventoryFilters
-            filters={filters}
-            onFiltersChange={setFilters}
-            materialOptions={materialOptions}
-            colorOptions={colorOptions}
-          />
-
-          {isLoading && (
-            <div className="inventory-empty">
-              <h2>Loading live inventory...</h2>
-              <p>
-                Pulling current slab availability from Whitestone Distribution.
-              </p>
+          <div className="inventory-layout">
+            <div className="inventory-sidebar-column">
+              <div className="inventory-sidebar-sticky">
+                <InventoryFilters
+                  filters={filters}
+                  onFiltersChange={setFilters}
+                  materialOptions={materialOptions}
+                  colorOptions={colorOptions}
+                  thicknessOptions={thicknessOptions}
+                  inventoryTypeOptions={inventoryTypeOptions}
+                  finishOptions={finishOptions}
+                />
+              </div>
             </div>
-          )}
 
-          {!isLoading && errorMessage && (
-            <div className="inventory-empty">
-              <h2>Inventory unavailable</h2>
-              <p>{errorMessage}</p>
+            <div className="inventory-main-column">
+              <div className="inventory-main-top">
+                <PricingNotice />
+              </div>
+
+              <div className="inventory-toolbar">
+                <div className="inventory-results-count">
+                  {isLoading
+                    ? "Loading slabs..."
+                    : `${sortedSlabs.length} slab${
+                        sortedSlabs.length === 1 ? "" : "s"
+                      } available`}
+                </div>
+
+                <div className="inventory-toolbar-controls">
+                  <label htmlFor="inventory-sort">Sort by</label>
+                  <select
+                    id="inventory-sort"
+                    value={sortBy}
+                    onChange={(event) =>
+                      setSortBy(event.target.value as SortOption)
+                    }
+                  >
+                    <option value="newest">Newest</option>
+                    <option value="name-asc">Name: A to Z</option>
+                    <option value="name-desc">Name: Z to A</option>
+                  </select>
+                </div>
+              </div>
+
+              {isLoading && (
+                <div className="inventory-empty">
+                  <h2>Loading live inventory...</h2>
+                  <p>
+                    Pulling current slab availability from Whitestone Distribution.
+                  </p>
+                </div>
+              )}
+
+              {!isLoading && errorMessage && (
+                <div className="inventory-empty">
+                  <h2>Inventory unavailable</h2>
+                  <p>{errorMessage}</p>
+                </div>
+              )}
+
+              {!isLoading && !errorMessage && (
+                <InventoryGrid slabs={sortedSlabs} />
+              )}
             </div>
-          )}
-
-          {!isLoading && !errorMessage && (
-            <InventoryGrid slabs={filteredSlabs} />
-          )}
+          </div>
         </div>
       </section>
     </>

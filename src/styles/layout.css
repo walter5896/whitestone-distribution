@@ -18,12 +18,12 @@ main {
   z-index: 50;
   background: rgba(248, 245, 239, 0.97);
   backdrop-filter: blur(14px);
-  border-bottom: 0;
+  border-bottom: 1px solid rgba(222, 214, 201, 0.72);
   box-shadow: none;
 }
 
 .header-inner {
-  width: min(1180px, calc(100% - 40px));
+  width: min(var(--container), calc(100% - 40px));
   margin: 0 auto;
   min-height: 108px;
   display: grid;
@@ -36,6 +36,8 @@ main {
   display: flex;
   align-items: center;
   justify-self: start;
+  border: 0;
+  border-radius: var(--radius-sm);
 }
 
 .brand-logo {
@@ -43,6 +45,7 @@ main {
   height: auto;
   object-fit: contain;
   display: block;
+  border-radius: var(--radius-sm);
 }
 
 .brand-text,
@@ -62,12 +65,12 @@ main {
   position: static;
   color: var(--color-text);
   font-size: 0.88rem;
-  font-weight: 800;
+  font-weight: 900;
+  letter-spacing: 0.01em;
   padding: 10px 0;
   transition: color 0.2s ease;
 }
 
-/* Kill all nav underline styling */
 .nav-link::after,
 .nav-link.active::after,
 .nav-link:hover::after {
@@ -85,12 +88,15 @@ main {
   align-items: center;
   justify-content: center;
   gap: 8px;
+  min-height: var(--button-height);
   background: var(--color-gold);
   color: white;
-  padding: 13px 22px;
-  border-radius: 999px;
+  padding: 0 22px;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
   font-size: 0.9rem;
   font-weight: 900;
+  line-height: 1;
   white-space: nowrap;
   box-shadow: 0 10px 24px rgba(184, 137, 58, 0.22);
   transition:
@@ -106,17 +112,59 @@ main {
 }
 
 /* =========================
+   MOBILE NAV
+========================= */
+
+.mobile-nav-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+.mobile-nav {
+  display: none;
+  border-top: 1px solid var(--color-border);
+  background: rgba(248, 245, 239, 0.98);
+}
+
+.mobile-nav-inner {
+  width: min(var(--container), calc(100% - 40px));
+  margin: 0 auto;
+  padding: 18px 0 22px;
+  display: grid;
+  gap: 8px;
+}
+
+.mobile-nav a {
+  display: block;
+  padding: 12px 0;
+  color: var(--color-text);
+  font-size: 0.95rem;
+  font-weight: 900;
+}
+
+.mobile-nav a:hover {
+  color: var(--color-gold-dark);
+}
+
+/* =========================
    FOOTER
 ========================= */
 
 .site-footer {
-  background: #171410;
+  background: var(--color-black);
   color: white;
   padding-top: 64px;
 }
 
 .footer-grid {
-  width: min(1180px, calc(100% - 40px));
+  width: min(var(--container), calc(100% - 40px));
   margin: 0 auto;
   display: grid;
   grid-template-columns: 1.25fr 1fr 1fr;
@@ -135,21 +183,26 @@ main {
   object-fit: contain;
   display: block;
   margin-bottom: 20px;
+  border-radius: var(--radius-sm);
 }
 
 .footer-brand {
   color: white !important;
   font-family: var(--font-heading);
   font-size: 1.65rem;
+  font-weight: 600;
   line-height: 1.05;
-  letter-spacing: 0;
+  letter-spacing: 0.01em;
   margin: 0 0 14px;
+  text-transform: none;
 }
 
 .site-footer h3 {
   color: white !important;
   font-family: var(--font-heading);
-  font-size: 1.25rem;
+  font-size: 1.22rem;
+  font-weight: 600;
+  line-height: 1.08;
   margin: 0 0 18px;
 }
 
@@ -165,6 +218,7 @@ main {
 
 .site-footer a {
   display: block;
+  width: fit-content;
   margin: 10px 0;
   transition: color 0.2s ease;
 }
@@ -222,16 +276,31 @@ main {
     display: none;
   }
 
+  .mobile-nav-toggle {
+    display: inline-flex;
+  }
+
+  .mobile-nav.is-open,
+  .mobile-nav.open,
+  .mobile-nav[data-open="true"] {
+    display: block;
+  }
+
   .footer-grid {
     grid-template-columns: 1fr;
     gap: 34px;
+  }
+
+  .footer-brand-block {
+    max-width: 440px;
   }
 }
 
 @media (max-width: 520px) {
   .header-inner,
-  .footer-grid {
-    width: min(100% - 28px, 1180px);
+  .footer-grid,
+  .mobile-nav-inner {
+    width: min(100% - 28px, var(--container));
   }
 
   .header-inner {
@@ -244,5 +313,13 @@ main {
 
   .site-footer {
     padding-top: 44px;
+  }
+
+  .footer-logo {
+    width: 104px;
+  }
+
+  .footer-brand {
+    font-size: 1.42rem;
   }
 }

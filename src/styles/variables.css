@@ -1,21 +1,81 @@
 @import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800;900&display=swap");
 
 :root {
+  /* =========================
+     COLORS
+  ========================= */
+
   --color-bg: #f8f5ef;
   --color-surface: #fffdf9;
   --color-surface-soft: #eee8dd;
   --color-text: #25211c;
+  --color-heading: #25211c;
   --color-muted: #6c6357;
   --color-gold: #b8893a;
   --color-gold-dark: #9d742f;
   --color-border: #ded6c9;
   --color-black: #171410;
 
+  /* =========================
+     FONTS
+  ========================= */
+
   --font-heading: "Cinzel", Georgia, "Times New Roman", serif;
   --font-body: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
     sans-serif;
 
+  /* =========================
+     LAYOUT
+  ========================= */
+
   --container: 1180px;
-  --radius: 18px;
+
+  /* =========================
+     RADIUS SYSTEM
+     Premium squared-off style
+  ========================= */
+
+  --radius-xs: 3px;
+  --radius-sm: 5px;
+  --radius: 8px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --radius-xl: 14px;
+  --radius-pill: 8px;
+
+  /* =========================
+     SHADOWS
+  ========================= */
+
+  --shadow-sm: 0 8px 22px rgba(31, 29, 26, 0.08);
   --shadow: 0 18px 48px rgba(31, 29, 26, 0.12);
+  --shadow-lg: 0 24px 70px rgba(31, 29, 26, 0.16);
+
+  /* =========================
+     TYPOGRAPHY SCALE
+  ========================= */
+
+  --type-hero: clamp(3.2rem, 6vw, 5.6rem);
+  --type-page-title: clamp(2.75rem, 5vw, 4.6rem);
+  --type-section-title: clamp(2rem, 4vw, 3.25rem);
+  --type-card-title: clamp(1.25rem, 2vw, 1.65rem);
+  --type-body: 1rem;
+  --type-small: 0.9rem;
+  --type-eyebrow: 0.72rem;
+
+  --line-tight: 0.96;
+  --line-heading: 1.05;
+  --line-body: 1.7;
+
+  --tracking-heading: 0.01em;
+  --tracking-eyebrow: 0.18em;
+
+  /* =========================
+     UI SIZING
+  ========================= */
+
+  --button-height: 44px;
+  --input-height: 44px;
+  --section-padding: 88px;
+  --section-padding-sm: 56px;
 }
