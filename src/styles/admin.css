@@ -33,6 +33,36 @@
   white-space: nowrap;
 }
 
+.admin-header-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.admin-header-actions .btn {
+  gap: 8px;
+}
+
+.admin-sign-out-button {
+  color: #843131;
+  border-color: rgba(132, 49, 49, 0.35);
+  background: transparent;
+}
+
+.admin-sign-out-button:hover {
+  background: #fff6f4;
+  color: #843131;
+  border-color: rgba(132, 49, 49, 0.55);
+}
+
+.admin-sign-out-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.72;
+  transform: none;
+}
+
 /* =========================
    ADMIN STATS
 ========================= */
@@ -290,6 +320,10 @@
     flex-direction: column;
   }
 
+  .admin-header-actions {
+    justify-content: flex-start;
+  }
+
   .admin-stat-grid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -310,6 +344,15 @@
   }
 
   .admin-header .btn {
+    width: 100%;
+  }
+
+  .admin-header-actions {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .admin-header-actions .btn {
     width: 100%;
   }
 

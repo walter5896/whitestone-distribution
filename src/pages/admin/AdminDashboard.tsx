@@ -1,21 +1,26 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   ArrowRight,
   Gem,
   Inbox,
   LayoutDashboard,
+  LogOut,
   Star,
   ToggleRight,
 } from "lucide-react";
 import { getAdminInquiries, getAdminSlabs } from "../../lib/adminQueries";
 import type { AdminInquiry } from "../../lib/adminQueries";
+import { signOutAdmin } from "../../lib/authQueries";
 import type { Slab } from "../../types/slab";
 
 export function AdminDashboard() {
+  const navigate = useNavigate();
+
   const [inquiries, setInquiries] = useState<AdminInquiry[]>([]);
   const [slabs, setSlabs] = useState<Slab[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isSigningOut, setIsSigningOut] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
@@ -34,7 +39,7 @@ export function AdminDashboard() {
       } catch (error) {
         console.error("Failed to load admin dashboard:", error);
         setErrorMessage(
-          "Admin data could not be loaded. This may be an RLS permission issue until admin authentication is connected."
+          "Admin data could not be loaded. This may be an admin permission or session issue."
         );
       } finally {
         setIsLoading(false);
@@ -43,6 +48,19 @@ export function AdminDashboard() {
 
     loadAdminDashboard();
   }, []);
+
+  async function handleSignOut() {
+    try {
+      setIsSigningOut(true);
+      await signOutAdmin();
+      navigate("/admin/login", { replace: true });
+    } catch (error) {
+      console.error("Failed to sign out:", error);
+      setErrorMessage("Could not sign out. Please refresh and try again.");
+    } finally {
+      setIsSigningOut(false);
+    }
+  }
 
   const stats = useMemo(() => {
     const activeSlabs = slabs.filter((slab) => slab.status !== "sold");
@@ -78,10 +96,22 @@ export function AdminDashboard() {
             </p>
           </div>
 
-          <Link to="/live-inventory" className="btn btn-secondary">
-            View Public Inventory
-            <ArrowRight size={16} />
-          </Link>
+          <div className="admin-header-actions">
+            <Link to="/live-inventory" className="btn btn-secondary">
+              View Public Inventory
+              <ArrowRight size={16} />
+            </Link>
+
+            <button
+              type="button"
+              className="btn btn-secondary admin-sign-out-button"
+              onClick={handleSignOut}
+              disabled={isSigningOut}
+            >
+              <LogOut size={16} />
+              {isSigningOut ? "Signing Out..." : "Sign Out"}
+            </button>
+          </div>
         </div>
 
         {isLoading && (
