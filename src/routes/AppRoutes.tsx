@@ -9,8 +9,10 @@ import { Fabricators } from "../pages/Fabricators";
 import { About } from "../pages/About";
 import { Contact } from "../pages/Contact";
 import { NotFound } from "../pages/NotFound";
+
 import { AdminDashboard } from "../pages/admin/AdminDashboard";
 import { AdminLogin } from "../pages/admin/AdminLogin";
+import { AdminInquiries } from "../pages/admin/AdminInquiries";
 import { ProtectedAdminRoute } from "../components/admin/ProtectedAdminRoute";
 
 export function AppRoutes() {
@@ -34,6 +36,15 @@ export function AppRoutes() {
           element={
             <ProtectedAdminRoute>
               <AdminDashboard />
+            </ProtectedAdminRoute>
+          }
+        />
+
+        <Route
+          path="/admin/inquiries"
+          element={
+            <ProtectedAdminRoute>
+              <AdminInquiries />
             </ProtectedAdminRoute>
           }
         />
