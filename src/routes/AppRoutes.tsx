@@ -10,6 +10,8 @@ import { About } from "../pages/About";
 import { Contact } from "../pages/Contact";
 import { NotFound } from "../pages/NotFound";
 import { AdminDashboard } from "../pages/admin/AdminDashboard";
+import { AdminLogin } from "../pages/admin/AdminLogin";
+import { ProtectedAdminRoute } from "../components/admin/ProtectedAdminRoute";
 
 export function AppRoutes() {
   return (
@@ -25,7 +27,16 @@ export function AppRoutes() {
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
 
-        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/admin/login" element={<AdminLogin />} />
+
+        <Route
+          path="/admin"
+          element={
+            <ProtectedAdminRoute>
+              <AdminDashboard />
+            </ProtectedAdminRoute>
+          }
+        />
 
         <Route path="*" element={<NotFound />} />
       </Route>

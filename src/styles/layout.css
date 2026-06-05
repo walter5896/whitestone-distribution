@@ -125,6 +125,7 @@ main {
   border-radius: var(--radius);
   background: var(--color-surface);
   color: var(--color-text);
+  cursor: pointer;
 }
 
 .mobile-nav {
@@ -149,7 +150,8 @@ main {
   font-weight: 900;
 }
 
-.mobile-nav a:hover {
+.mobile-nav a:hover,
+.mobile-nav a.active {
   color: var(--color-gold-dark);
 }
 
@@ -223,7 +225,8 @@ main {
   transition: color 0.2s ease;
 }
 
-.site-footer a:hover {
+.site-footer a:hover,
+.site-footer a.active {
   color: white;
 }
 
@@ -231,6 +234,17 @@ main {
   color: var(--color-gold);
   vertical-align: middle;
   margin-right: 8px;
+}
+
+.footer-staff-link {
+  margin-top: 18px !important;
+  color: #9f9587 !important;
+  font-size: 0.86rem;
+}
+
+.footer-staff-link:hover,
+.footer-staff-link.active {
+  color: #f6e8cf !important;
 }
 
 .footer-bottom {

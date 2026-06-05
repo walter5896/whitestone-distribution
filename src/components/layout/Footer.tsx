@@ -13,8 +13,8 @@ export function Footer() {
           />
           <h2 className="footer-brand">Whitestone Distribution</h2>
           <p>
-            Your trusted source for premium natural and engineered stone.
-            Live inventory, direct communication, and dependable service.
+            Your trusted source for premium natural and engineered stone. Live
+            inventory, direct communication, and dependable service.
           </p>
         </div>
 
@@ -26,6 +26,9 @@ export function Footer() {
           <NavLink to="/fabricators">Fabricators</NavLink>
           <NavLink to="/about">About</NavLink>
           <NavLink to="/contact">Contact</NavLink>
+          <NavLink to="/admin" className="footer-staff-link">
+            Staff Login
+          </NavLink>
         </div>
 
         <div>
@@ -44,7 +47,8 @@ export function Footer() {
       </div>
 
       <div className="footer-bottom">
-        © {new Date().getFullYear()} Whitestone Distribution. All rights reserved.
+        © {new Date().getFullYear()} Whitestone Distribution. All rights
+        reserved.
       </div>
     </footer>
   );

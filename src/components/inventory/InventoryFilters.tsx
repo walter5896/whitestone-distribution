@@ -1,3 +1,4 @@
+import type { Dispatch, SetStateAction } from "react";
 import type { Slab } from "../../types/slab";
 
 export type InventoryFiltersState = {
@@ -5,36 +6,50 @@ export type InventoryFiltersState = {
   materialType: string;
   colorFamily: string;
   thickness: string;
-  inventoryType: string;
+  inventoryType: Slab["inventoryType"] | "all";
   finish: string;
   status: Slab["status"] | "all";
 };
 
 type InventoryFiltersProps = {
   filters: InventoryFiltersState;
-  onFiltersChange: React.Dispatch<React.SetStateAction<InventoryFiltersState>>;
+  onFiltersChange: Dispatch<SetStateAction<InventoryFiltersState>>;
   materialOptions: string[];
   colorOptions: string[];
-  thicknessOptions: string[];
-  inventoryTypeOptions: string[];
-  finishOptions: string[];
+  thicknessOptions?: string[];
+  inventoryTypeOptions?: string[];
+  finishOptions?: string[];
+  statusOptions?: string[];
 };
+
+const fallbackThicknessOptions = ["2cm", "3cm"];
+const fallbackInventoryTypeOptions = ["full_slab", "remnant"];
+const fallbackFinishOptions = ["Polished", "Leathered", "Honed"];
+const fallbackStatusOptions = ["available", "limited", "on_hold", "sold"];
+
+function formatOptionLabel(value: string) {
+  return value
+    .split("_")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}
 
 export function InventoryFilters({
   filters,
   onFiltersChange,
   materialOptions,
   colorOptions,
-  thicknessOptions,
-  inventoryTypeOptions,
-  finishOptions,
+  thicknessOptions = fallbackThicknessOptions,
+  inventoryTypeOptions = fallbackInventoryTypeOptions,
+  finishOptions = fallbackFinishOptions,
+  statusOptions = fallbackStatusOptions,
 }: InventoryFiltersProps) {
-  function updateFilter<K extends keyof InventoryFiltersState>(
-    key: K,
-    value: InventoryFiltersState[K]
+  function updateFilter<Key extends keyof InventoryFiltersState>(
+    key: Key,
+    value: InventoryFiltersState[Key]
   ) {
-    onFiltersChange((prev) => ({
-      ...prev,
+    onFiltersChange((currentFilters) => ({
+      ...currentFilters,
       [key]: value,
     }));
   }
@@ -47,70 +62,70 @@ export function InventoryFilters({
       thickness: "all",
       inventoryType: "all",
       finish: "all",
-      status: "all",
+      status: "available",
     });
   }
 
   return (
     <aside className="inventory-sidebar-card">
       <div className="inventory-sidebar-header">
-        <p className="inventory-sidebar-label">Refine Results</p>
+        <h2 className="inventory-sidebar-label">Refine Results</h2>
       </div>
 
       <div className="inventory-filter-group">
-        <label htmlFor="inventory-search">Search by stone</label>
+        <label htmlFor="inventory-search">Search by Stone</label>
         <input
           id="inventory-search"
-          type="text"
-          placeholder="Search by stone, material, color, finish, or tag..."
+          type="search"
           value={filters.search}
+          placeholder="Search by stone, material, color, finish, or tag..."
           onChange={(event) => updateFilter("search", event.target.value)}
         />
       </div>
 
       <div className="inventory-filter-group">
-        <label htmlFor="material-type">Material</label>
+        <label htmlFor="inventory-material">Material</label>
         <select
-          id="material-type"
+          id="inventory-material"
           value={filters.materialType}
           onChange={(event) => updateFilter("materialType", event.target.value)}
         >
           <option value="all">All Materials</option>
-          {materialOptions.map((option) => (
-            <option key={option} value={option}>
-              {option}
+          {materialOptions.map((material) => (
+            <option key={material} value={material}>
+              {material}
             </option>
           ))}
         </select>
       </div>
 
       <div className="inventory-filter-group">
-        <label htmlFor="color-family">Color Family</label>
+        <label htmlFor="inventory-color">Color Family</label>
         <select
-          id="color-family"
+          id="inventory-color"
           value={filters.colorFamily}
           onChange={(event) => updateFilter("colorFamily", event.target.value)}
         >
           <option value="all">All Colors</option>
-          {colorOptions.map((option) => (
-            <option key={option} value={option}>
-              {option}
+          {colorOptions.map((color) => (
+            <option key={color} value={color}>
+              {color}
             </option>
           ))}
         </select>
       </div>
 
       <div className="inventory-filter-group">
-        <label htmlFor="thickness">Thickness</label>
+        <label htmlFor="inventory-thickness">Thickness</label>
         <select
-          id="thickness"
+          id="inventory-thickness"
           value={filters.thickness}
           onChange={(event) => updateFilter("thickness", event.target.value)}
         >
           <option value="all">All Thicknesses</option>
-          {thicknessOptions.map((option) => (
-            <option key={option} value={option}>
-              {option}
+          {thicknessOptions.map((thickness) => (
+            <option key={thickness} value={thickness}>
+              {thickness}
             </option>
           ))}
         </select>
@@ -122,38 +137,41 @@ export function InventoryFilters({
           id="inventory-type"
           value={filters.inventoryType}
           onChange={(event) =>
-            updateFilter("inventoryType", event.target.value)
+            updateFilter(
+              "inventoryType",
+              event.target.value as InventoryFiltersState["inventoryType"]
+            )
           }
         >
           <option value="all">All Types</option>
-          {inventoryTypeOptions.map((option) => (
-            <option key={option} value={option}>
-              <option value={option}>{option}</option>
+          {inventoryTypeOptions.map((inventoryType) => (
+            <option key={inventoryType} value={inventoryType}>
+              {formatOptionLabel(inventoryType)}
             </option>
           ))}
         </select>
       </div>
 
       <div className="inventory-filter-group">
-        <label htmlFor="finish">Finish</label>
+        <label htmlFor="inventory-finish">Finish</label>
         <select
-          id="finish"
+          id="inventory-finish"
           value={filters.finish}
           onChange={(event) => updateFilter("finish", event.target.value)}
         >
           <option value="all">All Finishes</option>
-          {finishOptions.map((option) => (
-            <option key={option} value={option}>
-              {option}
+          {finishOptions.map((finish) => (
+            <option key={finish} value={finish}>
+              {finish}
             </option>
           ))}
         </select>
       </div>
 
       <div className="inventory-filter-group">
-        <label htmlFor="status">Status</label>
+        <label htmlFor="inventory-status">Status</label>
         <select
-          id="status"
+          id="inventory-status"
           value={filters.status}
           onChange={(event) =>
             updateFilter(
@@ -162,12 +180,12 @@ export function InventoryFilters({
             )
           }
         >
-          <option value="all">Any Status</option>
-          <option value="available">Available</option>
-          <option value="limited">Limited</option>
-          <option value="on_hold">On Hold</option>
-          <option value="reserved">Reserved</option>
-          <option value="sold">Sold</option>
+          <option value="all">All Statuses</option>
+          {statusOptions.map((status) => (
+            <option key={status} value={status}>
+              {formatOptionLabel(status)}
+            </option>
+          ))}
         </select>
       </div>
 
@@ -180,10 +198,10 @@ export function InventoryFilters({
       </button>
 
       <div className="inventory-help-card">
-        <p className="inventory-help-title">Need something specific?</p>
+        <h3 className="inventory-help-title">Need something specific?</h3>
         <p>
           If you do not see what you are looking for, our team can help source
-          the right slab for your project.
+          the right material for your project.
         </p>
         <a href="/contact" className="inventory-help-link">
           Contact Our Team
