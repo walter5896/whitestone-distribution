@@ -9,18 +9,24 @@ import { Fabricators } from "../pages/Fabricators";
 import { About } from "../pages/About";
 import { Contact } from "../pages/Contact";
 import { NotFound } from "../pages/NotFound";
+import { AdminDashboard } from "../pages/admin/AdminDashboard";
 
 export function AppRoutes() {
   return (
     <Routes>
       <Route element={<MainLayout />}>
         <Route path="/" element={<Home />} />
+
         <Route path="/live-inventory" element={<LiveInventory />} />
         <Route path="/live-inventory/:slug" element={<SlabDetail />} />
+
         <Route path="/materials" element={<Materials />} />
         <Route path="/fabricators" element={<Fabricators />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
+
+        <Route path="/admin" element={<AdminDashboard />} />
+
         <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
