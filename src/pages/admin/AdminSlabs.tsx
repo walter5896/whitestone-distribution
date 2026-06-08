@@ -1,27 +1,32 @@
 import { useEffect, useMemo, useState } from "react";
-import type { FormEvent } from "react";
+import type { ChangeEvent, FormEvent } from "react";
 import { Link } from "react-router-dom";
 import {
   ArrowLeft,
   ArrowRight,
   Eye,
   Gem,
+  Image,
   Pencil,
+  Plus,
   RefreshCcw,
   Save,
   Search,
   Star,
   ToggleLeft,
   ToggleRight,
+  Upload,
   X,
 } from "lucide-react";
 import {
+  createAdminSlab,
   getAdminSlabs,
   updateAdminSlab,
   updateAdminSlabActive,
   updateAdminSlabFeatured,
   updateAdminSlabNewArrival,
   updateAdminSlabStatus,
+  uploadAdminSlabImage,
 } from "../../lib/adminQueries";
 import type { AdminSlab } from "../../lib/adminQueries";
 import type { Slab } from "../../types/slab";
@@ -50,6 +55,34 @@ type AdminSlabFormState = {
   primaryImageUrl: string;
 };
 
+type AdminSlabCreateFormState = AdminSlabFormState & {
+  slug: string;
+  isActive: boolean;
+  isFeatured: boolean;
+  isNewArrival: boolean;
+};
+
+function createDefaultCreateFormState(): AdminSlabCreateFormState {
+  return {
+    slug: "",
+    name: "",
+    materialType: "",
+    colorFamily: "",
+    thickness: "",
+    dimensions: "",
+    finish: "",
+    inventoryType: "full_slab",
+    status: "available",
+    description: "",
+    styleTags: "",
+    internalNotes: "",
+    primaryImageUrl: "",
+    isActive: true,
+    isFeatured: false,
+    isNewArrival: true,
+  };
+}
+
 function formatLabel(value: string | null | undefined) {
   return (value || "")
     .split("_")
@@ -69,6 +102,15 @@ function formatDate(date: string) {
     day: "numeric",
     year: "numeric",
   }).format(parsedDate);
+}
+
+function slugify(value: string) {
+  return value
+    .trim()
+    .toLowerCase()
+    .replace(/&/g, "and")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
 }
 
 function createEditFormState(slab: AdminSlab): AdminSlabFormState {
@@ -95,6 +137,14 @@ function parseStyleTags(tags: string) {
     .filter(Boolean);
 }
 
+function getSelectedFileName(file: File | null) {
+  if (!file) {
+    return "No file selected";
+  }
+
+  return file.name;
+}
+
 export function AdminSlabs() {
   const [slabs, setSlabs] = useState<AdminSlab[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -108,6 +158,13 @@ export function AdminSlabs() {
   const [savingId, setSavingId] = useState("");
   const [editingId, setEditingId] = useState("");
   const [editForm, setEditForm] = useState<AdminSlabFormState | null>(null);
+  const [editImageFile, setEditImageFile] = useState<File | null>(null);
+  const [showCreateForm, setShowCreateForm] = useState(false);
+  const [createForm, setCreateForm] = useState<AdminSlabCreateFormState>(
+    createDefaultCreateFormState()
+  );
+  const [createImageFile, setCreateImageFile] = useState<File | null>(null);
+  const [isCreating, setIsCreating] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
   async function loadSlabs(options?: { showRefreshingState?: boolean }) {
@@ -211,15 +268,27 @@ export function AdminSlabs() {
     );
   }, [slabs]);
 
+  function handleCreateImageSelect(event: ChangeEvent<HTMLInputElement>) {
+    const selectedFile = event.target.files?.[0] ?? null;
+    setCreateImageFile(selectedFile);
+  }
+
+  function handleEditImageSelect(event: ChangeEvent<HTMLInputElement>) {
+    const selectedFile = event.target.files?.[0] ?? null;
+    setEditImageFile(selectedFile);
+  }
+
   function openEditForm(slab: AdminSlab) {
     setEditingId(slab.id);
     setEditForm(createEditFormState(slab));
+    setEditImageFile(null);
     setErrorMessage("");
   }
 
   function closeEditForm() {
     setEditingId("");
     setEditForm(null);
+    setEditImageFile(null);
   }
 
   function updateEditForm<Field extends keyof AdminSlabFormState>(
@@ -229,6 +298,94 @@ export function AdminSlabs() {
     setEditForm((currentForm) =>
       currentForm ? { ...currentForm, [field]: value } : currentForm
     );
+  }
+
+  function updateCreateForm<Field extends keyof AdminSlabCreateFormState>(
+    field: Field,
+    value: AdminSlabCreateFormState[Field]
+  ) {
+    setCreateForm((currentForm) => ({
+      ...currentForm,
+      [field]: value,
+    }));
+  }
+
+  function handleCreateNameChange(nextName: string) {
+    setCreateForm((currentForm) => ({
+      ...currentForm,
+      name: nextName,
+      slug: slugify(nextName),
+    }));
+  }
+
+  function resetCreateForm() {
+    setCreateForm(createDefaultCreateFormState());
+    setCreateImageFile(null);
+    setShowCreateForm(false);
+  }
+
+  async function handleCreateSubmit(event: FormEvent) {
+    event.preventDefault();
+
+    if (!createForm.name.trim() || !createForm.materialType.trim()) {
+      setErrorMessage("Slab name and material type are required.");
+      return;
+    }
+
+    const finalSlug = createForm.slug.trim() || slugify(createForm.name);
+
+    if (!finalSlug) {
+      setErrorMessage("A valid slug is required.");
+      return;
+    }
+
+    try {
+      setIsCreating(true);
+      setErrorMessage("");
+
+      let uploadedImageUrl = "";
+
+      if (createImageFile) {
+        const uploadResult = await uploadAdminSlabImage(
+          createImageFile,
+          finalSlug
+        );
+
+        uploadedImageUrl = uploadResult.publicUrl;
+      }
+
+      const newSlab = await createAdminSlab({
+        slug: finalSlug,
+        name: createForm.name.trim(),
+        material_type: createForm.materialType.trim(),
+        color_family: createForm.colorFamily.trim() || null,
+        thickness: createForm.thickness.trim() || null,
+        dimensions: createForm.dimensions.trim() || null,
+        finish: createForm.finish.trim() || null,
+        inventory_type: createForm.inventoryType,
+        status: createForm.status,
+        description: createForm.description.trim() || null,
+        style_tags: parseStyleTags(createForm.styleTags),
+        internal_notes: createForm.internalNotes.trim() || null,
+        primary_image_url: uploadedImageUrl || null,
+        is_active: createForm.isActive,
+        is_featured: createForm.isFeatured,
+        is_new_arrival: createForm.isNewArrival,
+      });
+
+      setSlabs((currentSlabs) => [newSlab, ...currentSlabs]);
+      setStatusFilter("all");
+      setMaterialFilter("all");
+      setSearchTerm("");
+      resetCreateForm();
+    } catch (error) {
+      console.error("Failed to create slab:", error);
+      setErrorMessage(
+        "The new slab could not be created. Check for duplicate slugs, storage bucket setup, or admin permissions."
+      );
+    } finally {
+      setIsCreating(false);
+    }
   }
 
   async function updateSlabOptimistically(
@@ -280,6 +437,17 @@ export function AdminSlabs() {
       setSavingId(slab.id);
       setErrorMessage("");
 
+      let uploadedImageUrl = "";
+
+      if (editImageFile) {
+        const uploadResult = await uploadAdminSlabImage(
+          editImageFile,
+          slab.slug || editForm.name
+        );
+
+        uploadedImageUrl = uploadResult.publicUrl;
+      }
+
       const updatedSlab = await updateAdminSlab(slab.id, {
         name: editForm.name.trim(),
         material_type: editForm.materialType.trim(),
@@ -292,7 +460,7 @@ export function AdminSlabs() {
         description: editForm.description.trim() || null,
         style_tags: parseStyleTags(editForm.styleTags),
         internal_notes: editForm.internalNotes.trim() || null,
-        primary_image_url: editForm.primaryImageUrl.trim() || null,
+        primary_image_url: uploadedImageUrl || editForm.primaryImageUrl || null,
       });
 
       setSlabs((currentSlabs) =>
@@ -305,7 +473,7 @@ export function AdminSlabs() {
     } catch (error) {
       console.error("Failed to save slab details:", error);
       setErrorMessage(
-        "The slab details could not be saved. Please confirm your admin permissions and try again."
+        "The slab details could not be saved. Check storage bucket setup or admin permissions."
       );
     } finally {
       setSavingId("");
@@ -355,12 +523,28 @@ export function AdminSlabs() {
             <p className="eyebrow">Admin Inventory</p>
             <h1>Manage Slabs</h1>
             <p>
-              Review inventory, update availability, and control which slabs
-              appear as active, featured, or new arrivals.
+              Review inventory, add new slabs, update availability, upload slab
+              images, and control which slabs appear as active, featured, or new
+              arrivals.
             </p>
           </div>
 
           <div className="admin-header-actions">
+            <button
+              type="button"
+              className={
+                showCreateForm ? "btn btn-secondary" : "btn btn-primary"
+              }
+              onClick={() => {
+                setShowCreateForm((currentValue) => !currentValue);
+                setErrorMessage("");
+              }}
+              disabled={isCreating}
+            >
+              {showCreateForm ? <X size={16} /> : <Plus size={16} />}
+              {showCreateForm ? "Cancel New Slab" : "Add New Slab"}
+            </button>
+
             <button
               type="button"
               className="btn btn-secondary"
@@ -403,6 +587,279 @@ export function AdminSlabs() {
             <strong>{slabCounts.sold}</strong>
           </article>
         </div>
+
+        {showCreateForm && (
+          <div className="admin-panel">
+            <div className="admin-panel-header">
+              <div>
+                <p className="eyebrow">New Inventory</p>
+                <h2>Add New Slab</h2>
+                <p>
+                  Create a new inventory item and upload its main image directly
+                  from your computer.
+                </p>
+              </div>
+
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={resetCreateForm}
+                disabled={isCreating}
+              >
+                <X size={16} />
+                Close
+              </button>
+            </div>
+
+            <form className="admin-slab-edit-form" onSubmit={handleCreateSubmit}>
+              <div className="admin-form-grid">
+                <label>
+                  Slab Name
+                  <input
+                    type="text"
+                    value={createForm.name}
+                    onChange={(event) =>
+                      handleCreateNameChange(event.target.value)
+                    }
+                    placeholder="Taj Mahal Quartzite"
+                    required
+                  />
+                </label>
+
+                <label>
+                  URL Slug
+                  <input
+                    type="text"
+                    value={createForm.slug}
+                    onChange={(event) =>
+                      updateCreateForm("slug", slugify(event.target.value))
+                    }
+                    placeholder="taj-mahal-quartzite"
+                    required
+                  />
+                </label>
+
+                <label>
+                  Material Type
+                  <input
+                    type="text"
+                    value={createForm.materialType}
+                    onChange={(event) =>
+                      updateCreateForm("materialType", event.target.value)
+                    }
+                    placeholder="Quartzite"
+                    required
+                  />
+                </label>
+
+                <label>
+                  Color Family
+                  <input
+                    type="text"
+                    value={createForm.colorFamily}
+                    onChange={(event) =>
+                      updateCreateForm("colorFamily", event.target.value)
+                    }
+                    placeholder="Warm White"
+                  />
+                </label>
+
+                <label>
+                  Thickness
+                  <input
+                    type="text"
+                    value={createForm.thickness}
+                    onChange={(event) =>
+                      updateCreateForm("thickness", event.target.value)
+                    }
+                    placeholder="3cm"
+                  />
+                </label>
+
+                <label>
+                  Dimensions
+                  <input
+                    type="text"
+                    value={createForm.dimensions}
+                    onChange={(event) =>
+                      updateCreateForm("dimensions", event.target.value)
+                    }
+                    placeholder="128 x 77"
+                  />
+                </label>
+
+                <label>
+                  Finish
+                  <input
+                    type="text"
+                    value={createForm.finish}
+                    onChange={(event) =>
+                      updateCreateForm("finish", event.target.value)
+                    }
+                    placeholder="Polished"
+                  />
+                </label>
+
+                <label>
+                  Inventory Type
+                  <select
+                    value={createForm.inventoryType}
+                    onChange={(event) =>
+                      updateCreateForm(
+                        "inventoryType",
+                        event.target.value as Slab["inventoryType"]
+                      )
+                    }
+                  >
+                    {inventoryTypes.map((type) => (
+                      <option key={type} value={type}>
+                        {formatLabel(type)}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+
+                <label>
+                  Status
+                  <select
+                    value={createForm.status}
+                    onChange={(event) =>
+                      updateCreateForm(
+                        "status",
+                        event.target.value as Slab["status"]
+                      )
+                    }
+                  >
+                    {slabStatuses.map((status) => (
+                      <option key={status} value={status}>
+                        {formatLabel(status)}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+
+                <label>
+                  Public Visibility
+                  <select
+                    value={String(createForm.isActive)}
+                    onChange={(event) =>
+                      updateCreateForm("isActive", event.target.value === "true")
+                    }
+                  >
+                    <option value="true">Active / Public</option>
+                    <option value="false">Inactive / Hidden</option>
+                  </select>
+                </label>
+
+                <label>
+                  Featured
+                  <select
+                    value={String(createForm.isFeatured)}
+                    onChange={(event) =>
+                      updateCreateForm(
+                        "isFeatured",
+                        event.target.value === "true"
+                      )
+                    }
+                  >
+                    <option value="false">Not Featured</option>
+                    <option value="true">Featured</option>
+                  </select>
+                </label>
+
+                <label>
+                  New Arrival
+                  <select
+                    value={String(createForm.isNewArrival)}
+                    onChange={(event) =>
+                      updateCreateForm(
+                        "isNewArrival",
+                        event.target.value === "true"
+                      )
+                    }
+                  >
+                    <option value="true">New Arrival</option>
+                    <option value="false">Not New</option>
+                  </select>
+                </label>
+
+                <div className="admin-form-span-2 admin-file-upload-field">
+                  <span>Main Slab Image</span>
+
+                  <label className="admin-file-upload-box">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleCreateImageSelect}
+                      disabled={isCreating}
+                    />
+
+                    <Upload size={18} />
+                    <strong>Choose Image From Computer</strong>
+                    <small>{getSelectedFileName(createImageFile)}</small>
+                  </label>
+                </div>
+
+                <label className="admin-form-span-2">
+                  Style Tags
+                  <input
+                    type="text"
+                    value={createForm.styleTags}
+                    onChange={(event) =>
+                      updateCreateForm("styleTags", event.target.value)
+                    }
+                    placeholder="Luxury, Warm Neutral, Bookmatched"
+                  />
+                </label>
+
+                <label className="admin-form-span-2">
+                  Description
+                  <textarea
+                    value={createForm.description}
+                    onChange={(event) =>
+                      updateCreateForm("description", event.target.value)
+                    }
+                    rows={4}
+                    placeholder="Public slab description shown on the inventory detail page."
+                  />
+                </label>
+
+                <label className="admin-form-span-2">
+                  Internal Notes
+                  <textarea
+                    value={createForm.internalNotes}
+                    onChange={(event) =>
+                      updateCreateForm("internalNotes", event.target.value)
+                    }
+                    rows={3}
+                    placeholder="Private admin notes. Not shown publicly."
+                  />
+                </label>
+              </div>
+
+              <div className="admin-form-actions">
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={resetCreateForm}
+                  disabled={isCreating}
+                >
+                  <X size={16} />
+                  Cancel
+                </button>
+
+                <button
+                  type="submit"
+                  className="btn btn-primary"
+                  disabled={isCreating}
+                >
+                  <Save size={16} />
+                  {isCreating ? "Uploading + Creating..." : "Create Slab"}
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
 
         <div className="admin-panel admin-inquiries-toolbar">
           <div>
@@ -732,20 +1189,26 @@ export function AdminSlabs() {
                             </select>
                           </label>
 
-                          <label className="admin-form-span-2">
-                            Primary Image URL
-                            <input
-                              type="url"
-                              value={editForm.primaryImageUrl}
-                              onChange={(event) =>
-                                updateEditForm(
-                                  "primaryImageUrl",
-                                  event.target.value
-                                )
-                              }
-                              placeholder="https://..."
-                            />
-                          </label>
+                          <div className="admin-form-span-2 admin-file-upload-field">
+                            <span>Replace Main Slab Image</span>
+
+                            <label className="admin-file-upload-box">
+                              <input
+                                type="file"
+                                accept="image/*"
+                                onChange={handleEditImageSelect}
+                                disabled={savingId === slab.id}
+                              />
+
+                              <Image size={18} />
+                              <strong>Choose Replacement Image</strong>
+                              <small>{getSelectedFileName(editImageFile)}</small>
+                            </label>
+
+                            <p>
+                              Leave this blank to keep the current slab image.
+                            </p>
+                          </div>
 
                           <label className="admin-form-span-2">
                             Style Tags
@@ -804,7 +1267,7 @@ export function AdminSlabs() {
                           >
                             <Save size={16} />
                             {savingId === slab.id
-                              ? "Saving..."
+                              ? "Uploading + Saving..."
                               : "Save Changes"}
                           </button>
                         </div>

@@ -3,6 +3,90 @@ import { mapSupabaseSlab, type SupabaseSlab } from "./slabMapper";
 import type { Slab } from "../types/slab";
 
 /* =========================
+   STORAGE
+========================= */
+
+const SLAB_IMAGE_BUCKET = "slab-images";
+const MAX_IMAGE_SIZE_MB = 10;
+const MAX_IMAGE_SIZE_BYTES = MAX_IMAGE_SIZE_MB * 1024 * 1024;
+
+export type AdminImageUploadResult = {
+  path: string;
+  publicUrl: string;
+};
+
+function sanitizeStorageName(value: string) {
+  return value
+    .trim()
+    .toLowerCase()
+    .replace(/&/g, "and")
+    .replace(/[^a-z0-9._-]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+function getFileExtension(fileName: string) {
+  const extension = fileName.split(".").pop()?.toLowerCase();
+
+  if (!extension || extension === fileName.toLowerCase()) {
+    return "jpg";
+  }
+
+  return extension;
+}
+
+export async function uploadAdminSlabImage(
+  file: File,
+  slabSlugOrName: string
+): Promise<AdminImageUploadResult> {
+  if (!file) {
+    throw new Error("No image file was selected.");
+  }
+
+  if (!file.type.startsWith("image/")) {
+    throw new Error("Only image files can be uploaded.");
+  }
+
+  if (file.size > MAX_IMAGE_SIZE_BYTES) {
+    throw new Error(`Image must be smaller than ${MAX_IMAGE_SIZE_MB}MB.`);
+  }
+
+  const cleanFolderName =
+    sanitizeStorageName(slabSlugOrName) || "unassigned-slab";
+
+  const cleanOriginalName =
+    sanitizeStorageName(file.name.replace(/\.[^/.]+$/, "")) || "slab-image";
+
+  const extension = getFileExtension(file.name);
+  const uniqueFileName = `${Date.now()}-${cleanOriginalName}.${extension}`;
+  const filePath = `${cleanFolderName}/${uniqueFileName}`;
+
+  const { data, error } = await supabase.storage
+    .from(SLAB_IMAGE_BUCKET)
+    .upload(filePath, file, {
+      cacheControl: "3600",
+      contentType: file.type,
+      upsert: false,
+    });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  const { data: publicUrlData } = supabase.storage
+    .from(SLAB_IMAGE_BUCKET)
+    .getPublicUrl(data.path);
+
+  if (!publicUrlData.publicUrl) {
+    throw new Error("Image uploaded, but a public URL could not be generated.");
+  }
+
+  return {
+    path: data.path,
+    publicUrl: publicUrlData.publicUrl,
+  };
+}
+
+/* =========================
    INQUIRIES
 ========================= */
 
@@ -101,6 +185,25 @@ export type AdminSlabUpdatePayload = Partial<{
   primary_image_url: string | null;
 }>;
 
+export type AdminSlabCreatePayload = {
+  slug: string;
+  name: string;
+  material_type: string;
+  color_family?: string | null;
+  thickness?: string | null;
+  dimensions?: string | null;
+  finish?: string | null;
+  status?: Slab["status"];
+  inventory_type?: Slab["inventoryType"];
+  description?: string | null;
+  internal_notes?: string | null;
+  is_featured?: boolean;
+  is_new_arrival?: boolean;
+  is_active?: boolean;
+  style_tags?: string[] | null;
+  primary_image_url?: string | null;
+};
+
 function mapAdminSlab(row: AdminSupabaseSlab): AdminSlab {
   return {
     ...mapSupabaseSlab(row),
@@ -123,6 +226,49 @@ export async function getAdminSlabs() {
   }
 
   return (data as AdminSupabaseSlab[]).map(mapAdminSlab);
+}
+
+export async function createAdminSlab(payload: AdminSlabCreatePayload) {
+  const now = new Date().toISOString();
+
+  const cleanSlug = payload.slug.trim().toLowerCase();
+  const cleanName = payload.name.trim();
+  const cleanMaterialType = payload.material_type.trim();
+
+  if (!cleanSlug || !cleanName || !cleanMaterialType) {
+    throw new Error("Slug, name, and material type are required.");
+  }
+
+  const { data, error } = await supabase
+    .from("slabs")
+    .insert({
+      slug: cleanSlug,
+      name: cleanName,
+      material_type: cleanMaterialType,
+      color_family: payload.color_family ?? null,
+      thickness: payload.thickness ?? null,
+      dimensions: payload.dimensions ?? null,
+      finish: payload.finish ?? null,
+      status: payload.status ?? "available",
+      inventory_type: payload.inventory_type ?? "full_slab",
+      description: payload.description ?? null,
+      internal_notes: payload.internal_notes ?? null,
+      is_featured: payload.is_featured ?? false,
+      is_new_arrival: payload.is_new_arrival ?? false,
+      is_active: payload.is_active ?? true,
+      style_tags: payload.style_tags ?? [],
+      primary_image_url: payload.primary_image_url ?? null,
+      created_at: now,
+      updated_at: now,
+    })
+    .select("*")
+    .single();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return mapAdminSlab(data as AdminSupabaseSlab);
 }
 
 export async function updateAdminSlab(

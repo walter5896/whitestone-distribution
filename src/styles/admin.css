@@ -792,6 +792,76 @@
 }
 
 /* =========================
+   ADMIN FILE UPLOAD
+========================= */
+
+.admin-file-upload-field {
+  display: grid;
+  gap: 8px;
+}
+
+.admin-file-upload-field > span {
+  color: var(--color-text);
+  font-size: 0.74rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.admin-file-upload-field p {
+  margin: 0;
+  font-size: var(--type-small);
+}
+
+.admin-file-upload-box {
+  position: relative;
+  display: grid;
+  place-items: center;
+  gap: 8px;
+  min-height: 150px;
+  padding: 22px;
+  border: 1px dashed rgba(184, 137, 58, 0.48);
+  border-radius: var(--radius);
+  background: #fbf8f2;
+  color: var(--color-text);
+  text-align: center;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.admin-file-upload-box:hover {
+  border-color: var(--color-gold);
+  background: #fffdf9;
+  transform: translateY(-1px);
+}
+
+.admin-file-upload-box input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.admin-file-upload-box svg {
+  color: var(--color-gold-dark);
+}
+
+.admin-file-upload-box strong {
+  font-size: 0.95rem;
+}
+
+.admin-file-upload-box small {
+  color: var(--color-muted);
+  font-weight: 700;
+  word-break: break-word;
+}
+
+/* =========================
    RESPONSIVE
 ========================= */
 
