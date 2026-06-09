@@ -15,11 +15,13 @@ import {
   Star,
   ToggleLeft,
   ToggleRight,
+  Trash2,
   Upload,
   X,
 } from "lucide-react";
 import {
   createAdminSlab,
+  deleteAdminSlab,
   getAdminSlabs,
   updateAdminSlab,
   updateAdminSlabActive,
@@ -156,6 +158,7 @@ export function AdminSlabs() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [updatingId, setUpdatingId] = useState("");
   const [savingId, setSavingId] = useState("");
+  const [deletingId, setDeletingId] = useState("");
   const [editingId, setEditingId] = useState("");
   const [editForm, setEditForm] = useState<AdminSlabFormState | null>(null);
   const [editImageFile, setEditImageFile] = useState<File | null>(null);
@@ -477,6 +480,38 @@ export function AdminSlabs() {
       );
     } finally {
       setSavingId("");
+    }
+  }
+
+  async function handleDeleteSlab(slab: AdminSlab) {
+    const confirmed = window.confirm(
+      `Permanently delete "${slab.name}"?\n\nThis removes the slab listing from admin and public inventory. This cannot be undone.`
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      setDeletingId(slab.id);
+      setErrorMessage("");
+
+      await deleteAdminSlab(slab.id);
+
+      setSlabs((currentSlabs) =>
+        currentSlabs.filter((currentSlab) => currentSlab.id !== slab.id)
+      );
+
+      if (editingId === slab.id) {
+        closeEditForm();
+      }
+    } catch (error) {
+      console.error("Failed to delete slab:", error);
+      setErrorMessage(
+        "The slab could not be deleted. Please confirm your admin delete policy and permissions."
+      );
+    } finally {
+      setDeletingId("");
     }
   }
 
@@ -945,7 +980,10 @@ export function AdminSlabs() {
         {!isLoading && filteredSlabs.length > 0 && (
           <div className="admin-slab-management-list">
             {filteredSlabs.map((slab) => {
-              const isUpdating = updatingId === slab.id || savingId === slab.id;
+              const isUpdating =
+                updatingId === slab.id ||
+                savingId === slab.id ||
+                deletingId === slab.id;
               const isEditing = editingId === slab.id && editForm;
 
               return (
@@ -1069,6 +1107,16 @@ export function AdminSlabs() {
                         <Eye size={16} />
                         View Public
                       </Link>
+
+                      <button
+                        type="button"
+                        className="btn btn-secondary admin-danger-button"
+                        disabled={isUpdating}
+                        onClick={() => handleDeleteSlab(slab)}
+                      >
+                        <Trash2 size={16} />
+                        {deletingId === slab.id ? "Deleting..." : "Delete Slab"}
+                      </button>
                     </div>
 
                     {isEditing && editForm && (

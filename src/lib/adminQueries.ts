@@ -319,3 +319,11 @@ export async function updateAdminSlabActive(
 ) {
   return updateAdminSlab(slabId, { is_active: isActive });
 }
+
+export async function deleteAdminSlab(slabId: string) {
+  const { error } = await supabase.from("slabs").delete().eq("id", slabId);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+}
