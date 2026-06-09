@@ -34,6 +34,37 @@ function getFileExtension(fileName: string) {
   return extension;
 }
 
+function getStoragePathFromPublicUrl(publicUrl: string | null | undefined) {
+  if (!publicUrl) {
+    return "";
+  }
+
+  const bucketMarker = `/storage/v1/object/public/${SLAB_IMAGE_BUCKET}/`;
+  const markerIndex = publicUrl.indexOf(bucketMarker);
+
+  if (markerIndex === -1) {
+    return "";
+  }
+
+  return decodeURIComponent(publicUrl.slice(markerIndex + bucketMarker.length));
+}
+
+async function deleteSlabImageFromStorage(publicUrl: string | null | undefined) {
+  const imagePath = getStoragePathFromPublicUrl(publicUrl);
+
+  if (!imagePath) {
+    return;
+  }
+
+  const { error } = await supabase.storage
+    .from(SLAB_IMAGE_BUCKET)
+    .remove([imagePath]);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+}
+
 export async function uploadAdminSlabImage(
   file: File,
   slabSlugOrName: string
@@ -321,9 +352,24 @@ export async function updateAdminSlabActive(
 }
 
 export async function deleteAdminSlab(slabId: string) {
-  const { error } = await supabase.from("slabs").delete().eq("id", slabId);
+  const { data: slab, error: fetchError } = await supabase
+    .from("slabs")
+    .select("primary_image_url")
+    .eq("id", slabId)
+    .single();
 
-  if (error) {
-    throw new Error(error.message);
+  if (fetchError) {
+    throw new Error(fetchError.message);
+  }
+
+  await deleteSlabImageFromStorage(slab?.primary_image_url);
+
+  const { error: deleteError } = await supabase
+    .from("slabs")
+    .delete()
+    .eq("id", slabId);
+
+  if (deleteError) {
+    throw new Error(deleteError.message);
   }
 }
