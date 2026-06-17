@@ -34,11 +34,12 @@ export function FeaturedSlabsSection() {
     <section className="featured-slabs-section">
       <div className="container">
         <div className="featured-header">
-          <p className="eyebrow">Featured Slabs</p>
-          <h2>Current Inventory Highlights</h2>
+          <p className="eyebrow">Featured Inventory</p>
+          <h2>Rare Slabs Worth Seeing First</h2>
           <p>
-            A selection of slabs currently available. Inventory changes daily —
-            call to confirm availability, pricing, and slab holds.
+            A rotating selection of premium slabs chosen for movement, quality,
+            rarity, and project potential. Call to confirm availability, pricing,
+            and hold options.
           </p>
         </div>
 
@@ -53,8 +54,10 @@ export function FeaturedSlabsSection() {
           <div className="inventory-empty">
             <h2>Featured inventory unavailable</h2>
             <p>{errorMessage}</p>
+
             <Link to="/live-inventory" className="btn btn-primary">
               View Live Inventory
+              <ArrowRight size={16} />
             </Link>
           </div>
         )}
@@ -64,66 +67,84 @@ export function FeaturedSlabsSection() {
             <h2>No featured slabs selected.</h2>
             <p>
               Featured inventory will appear here once slabs are marked as
-              featured.
+              featured in the admin dashboard.
             </p>
+
             <Link to="/live-inventory" className="btn btn-primary">
               View Live Inventory
+              <ArrowRight size={16} />
             </Link>
           </div>
         )}
 
         {!isLoading && !errorMessage && slabs.length > 0 && (
-          <div className="featured-slab-grid">
-            {slabs.map((slab) => (
-              <article key={slab.id} className="featured-slab-card">
-                <Link to={`/live-inventory/${slab.slug}`}>
-                  <img
-                    src={slab.imageUrl}
-                    alt={slab.name}
-                    className="featured-slab-image"
-                  />
-                </Link>
-
-                <div className="featured-slab-body">
-                  <p className="featured-slab-type">{slab.materialType}</p>
-
-                  <h3>
-                    <Link to={`/live-inventory/${slab.slug}`}>{slab.name}</Link>
-                  </h3>
-
-                  <div className="featured-slab-specs">
-                    <span>
-                      <Ruler size={15} />
-                      {slab.dimensions}
-                    </span>
-
-                    <span>{slab.thickness}</span>
-
-                    <span>
-                      <Tag size={15} />
-                      {slab.finish}
-                    </span>
-                  </div>
-
-                  {slab.styleTags.length > 0 && (
-                    <div className="featured-slab-tags">
-                      {slab.styleTags.slice(0, 2).map((tag) => (
-                        <span key={tag}>{tag}</span>
-                      ))}
-                    </div>
-                  )}
-
-                  <Link
-                    to={`/live-inventory/${slab.slug}`}
-                    className="featured-slab-link"
-                  >
-                    View Slab Details
-                    <ArrowRight size={16} />
+          <>
+            <div className="featured-slab-grid">
+              {slabs.map((slab) => (
+                <article key={slab.id} className="featured-slab-card">
+                  <Link to={`/live-inventory/${slab.slug}`}>
+                    <img
+                      src={slab.imageUrl}
+                      alt={slab.name}
+                      className="featured-slab-image"
+                    />
                   </Link>
-                </div>
-              </article>
-            ))}
-          </div>
+
+                  <div className="featured-slab-body">
+                    <p className="featured-slab-type">{slab.materialType}</p>
+
+                    <h3>
+                      <Link to={`/live-inventory/${slab.slug}`}>
+                        {slab.name}
+                      </Link>
+                    </h3>
+
+                    <div className="featured-slab-specs">
+                      <span>
+                        <Ruler size={15} />
+                        {slab.dimensions || "Dimensions by request"}
+                      </span>
+
+                      <span>{slab.thickness || "Thickness available"}</span>
+
+                      <span>
+                        <Tag size={15} />
+                        {slab.finish || "Finish available"}
+                      </span>
+                    </div>
+
+                    {slab.styleTags.length > 0 && (
+                      <div className="featured-slab-tags">
+                        {slab.styleTags.slice(0, 2).map((tag) => (
+                          <span key={tag}>{tag}</span>
+                        ))}
+                      </div>
+                    )}
+
+                    <p>
+                      Call to confirm availability, bundle details, and current
+                      pricing.
+                    </p>
+
+                    <Link
+                      to={`/live-inventory/${slab.slug}`}
+                      className="featured-slab-link"
+                    >
+                      View Slab Details
+                      <ArrowRight size={16} />
+                    </Link>
+                  </div>
+                </article>
+              ))}
+            </div>
+
+            <div className="featured-footer-action">
+              <Link to="/live-inventory" className="btn btn-primary">
+                View Full Live Inventory
+                <ArrowRight size={16} />
+              </Link>
+            </div>
+          </>
         )}
       </div>
     </section>

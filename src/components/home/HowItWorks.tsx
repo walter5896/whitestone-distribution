@@ -1,23 +1,23 @@
 const steps = [
   {
     number: "01",
-    title: "Browse Live Inventory",
-    text: "Search available slabs by material, color, thickness, finish, and status.",
+    title: "Browse Current Inventory",
+    text: "Explore available slabs by material, color, finish, thickness, and status. Featured and fast-moving materials may change quickly.",
   },
   {
     number: "02",
-    title: "Find the Slab",
-    text: "Open slab details to view dimensions, style tags, availability, and notes.",
+    title: "Review the Details",
+    text: "Open slab details to view dimensions, style tags, availability, and material notes. Lot, bundle, and slab numbering can be confirmed directly with Whitestone.",
   },
   {
     number: "03",
-    title: "Call for Pricing",
-    text: "Pricing is handled directly so availability and details can be confirmed.",
+    title: "Call to Confirm",
+    text: "Pricing, availability, trade discounts, pre-arrival opportunities, and hold options are confirmed through direct conversation with our team.",
   },
   {
     number: "04",
-    title: "Reserve Direct",
-    text: "Slabs are not held until confirmed by phone with Whitestone Distribution.",
+    title: "Reserve, Pickup, or Deliver",
+    text: "Serious buyers may request a hold after speaking with management. Fabricators can coordinate pickup or delivery depending on timing, distance, and availability.",
   },
 ];
 
@@ -27,7 +27,12 @@ export function HowItWorks() {
       <div className="container">
         <div className="how-header">
           <p className="eyebrow">How It Works</p>
-          <h2>Simple Inventory. Direct Conversation.</h2>
+          <h2>Live Inventory. Real Guidance. Serious Holds.</h2>
+          <p>
+            Whitestone keeps the process direct so homeowners, builders,
+            designers, and fabricators can get accurate answers before making a
+            commitment.
+          </p>
         </div>
 
         <div className="how-grid">

@@ -7,32 +7,38 @@ export function FabricatorCallout() {
       <div className="container fabricator-grid">
         <div>
           <p className="eyebrow">For Fabricators</p>
-          <h2>Fast Slab Access for Trade Professionals.</h2>
+          <h2>Trade-Friendly Stone Access Without the Corporate Runaround.</h2>
           <p>
-            Built for fabricators who need current availability, clear slab
-            details, direct communication, and competitive pricing without
-            digging through a generic contractor site.
+            Whitestone works directly with fabricators who need competitive
+            pricing, confidential communication, reliable availability, and a
+            supplier who understands that your customer relationship matters.
+          </p>
+
+          <p>
+            Request trade pricing, confirm bundle availability, coordinate
+            pickup or delivery, and speak directly with a team that knows the
+            material, the jobsite, and the pressure of keeping a project moving.
           </p>
 
           <div className="fabricator-feature-list">
             <span>
-              <CheckCircle2 size={18} /> Current availability
+              <CheckCircle2 size={18} /> Confidential trade pricing
             </span>
             <span>
-              <Ruler size={18} /> Dimensions, thickness, and finish
+              <Ruler size={18} /> Lot, bundle, slab, and material details
             </span>
             <span>
-              <Phone size={18} /> Call-first reservation
+              <Phone size={18} /> Direct call-first availability confirmation
             </span>
           </div>
 
           <Link to="/fabricators" className="btn btn-primary">
-            Fabricator Access
+            Request Fabricator Access
           </Link>
         </div>
 
         <div className="fabricator-visual">
-          <span>Slab Yard / Warehouse Visual</span>
+          <span>Premium Slab Yard / Trade Pickup Visual</span>
         </div>
       </div>
     </section>

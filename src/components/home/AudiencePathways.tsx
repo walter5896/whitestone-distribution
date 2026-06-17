@@ -5,22 +5,22 @@ const audiences = [
   {
     icon: Home,
     label: "For Homeowners",
-    text: "Browse premium stone slabs for kitchens, bathrooms, fireplaces, feature walls, and more.",
+    text: "Explore premium natural stone for custom homes, kitchens, bathrooms, fireplaces, feature walls, and statement spaces. Our team helps you understand the material before you commit.",
     link: "Explore Materials",
     path: "/materials",
   },
   {
     icon: Hammer,
     label: "For Fabricators",
-    text: "Live inventory built for your workflow. Fast access, direct pricing, and slab holds by phone.",
-    link: "Visit Fabricator Page",
+    text: "Request confidential trade pricing, check availability, coordinate pickup or delivery, and work with a supplier that understands your customer relationship matters.",
+    link: "Request Trade Pricing",
     path: "/fabricators",
   },
   {
     icon: Building2,
-    label: "For Industries",
-    text: "Serving builders, designers, architects, and stone professionals with premium material.",
-    link: "Browse Inventory",
+    label: "For Builders + Designers",
+    text: "Source rare quartzite, dense dolomite, granite, soapstone, and pre-arrival materials for luxury projects, multi-home builds, and clients who want something beyond ordinary.",
+    link: "Browse Live Inventory",
     path: "/live-inventory",
   },
 ];

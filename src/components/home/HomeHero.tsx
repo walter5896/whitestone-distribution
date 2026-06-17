@@ -6,23 +6,25 @@ export function HomeHero() {
     <section className="home-hero">
       <div className="hero-inner">
         <div className="hero-copy">
-          <p className="hero-kicker">Premium Stone. Delivered with Pride.</p>
+          <p className="hero-kicker">
+            45 Years of Stone Expertise · Premium Natural Stone
+          </p>
 
           <div className="hero-rule" />
 
-          <h1>Premium Stone Distribution</h1>
+          <h1>Rare Stone, Personally Sourced</h1>
 
           <div className="hero-rule hero-rule-bottom" />
 
           <p>
-            Whitestone Distribution is your trusted source for premium natural
-            and engineered stone. Browse current inventory and call directly for
-            pricing, availability, and reservation.
+            Whitestone Distribution supplies premium natural stone selected
+            through decades of experience, trusted quarry relationships, and a
+            sharp eye for rare materials.
           </p>
 
           <div className="hero-actions">
             <Link to="/live-inventory" className="btn btn-primary">
-              Explore Our Stone Collection
+              Explore Current Inventory
             </Link>
 
             <a href="tel:8015550199" className="btn btn-secondary">

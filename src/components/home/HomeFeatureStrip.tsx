@@ -3,23 +3,23 @@ import { Crown, Handshake, ShieldCheck, Truck } from "lucide-react";
 const features = [
   {
     icon: ShieldCheck,
-    title: "Premium Quality",
-    text: "Carefully sourced stone from the world's most respected quarries.",
-  },
-  {
-    icon: Truck,
-    title: "Reliable Delivery",
-    text: "Direct coordination with dependable access you can count on.",
-  },
-  {
-    icon: Handshake,
-    title: "Industry Partners",
-    text: "Proudly serving fabricators, builders, designers, and architects.",
+    title: "45 Years Experience",
+    text: "Stone industry knowledge built through decades of sourcing, fabrication, and distribution.",
   },
   {
     icon: Crown,
-    title: "Exceptional Service",
-    text: "Dedicated to building lasting relationships through expertise and care.",
+    title: "Premium Selection",
+    text: "Rare quartzite, dolomite, granite, soapstone, and statement materials selected for quality.",
+  },
+  {
+    icon: Handshake,
+    title: "Trade Friendly",
+    text: "Confidential fabricator pricing, direct communication, and flexible project support.",
+  },
+  {
+    icon: Truck,
+    title: "Pickup + Delivery",
+    text: "Coordinate slab pickup or delivery depending on project timing, distance, and availability.",
   },
 ];
 

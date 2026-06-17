@@ -9,11 +9,11 @@ export function DarkReserveCTA() {
         </div>
 
         <div>
-          <p className="eyebrow">Ready to Reserve?</p>
-          <h2>Call directly for pricing and availability.</h2>
+          <p className="eyebrow">Pricing + Availability</p>
+          <h2>Call directly before reserving material.</h2>
           <p>
-            Pricing is not listed online. Call to confirm current availability,
-            pricing, and to reserve your slab.
+            Pricing, availability, holds, pre-arrival options, and trade
+            discounts are confirmed directly with Whitestone.
           </p>
         </div>
 

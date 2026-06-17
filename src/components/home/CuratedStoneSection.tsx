@@ -7,7 +7,7 @@ const materials = [
     imageUrl: "/images/slabs/taj-mahal-quartzite.png",
   },
   {
-    name: "Marble",
+    name: "Dolomite",
     imageUrl: "/images/slabs/calacatta-gold-marble.png",
   },
   {
@@ -15,7 +15,7 @@ const materials = [
     imageUrl: "/images/slabs/gray-marble.png",
   },
   {
-    name: "Exotic Stone",
+    name: "Rare Exotics",
     imageUrl: "/images/slabs/black-fusion-granite.png",
   },
 ];
@@ -25,16 +25,18 @@ export function CuratedStoneSection() {
     <section className="curated-stone-section">
       <div className="container curated-grid">
         <div className="curated-copy">
-          <p className="eyebrow">Curated. Crafted. Delivered.</p>
-          <h2>Stone That Defines Extraordinary Spaces</h2>
+          <p className="eyebrow">Personally Sourced. Carefully Selected.</p>
+          <h2>Premium Stone Chosen With Experience</h2>
           <div className="curated-rule" />
+
           <p>
-            From timeless classics to rare exotics, our collection is selected
-            for beauty, performance, and lasting value.
+            From rare quartzite and dense dolomite to granite, soapstone, and
+            statement exotics, Whitestone selects premium natural stone for
+            beauty, quality, and lasting value.
           </p>
 
           <Link to="/materials" className="btn btn-primary">
-            Explore Our Stone Collection
+            Explore Materials
             <ArrowRight size={16} />
           </Link>
         </div>

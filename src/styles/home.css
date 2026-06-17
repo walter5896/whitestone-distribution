@@ -375,12 +375,29 @@
   font-weight: 900;
 }
 
+.featured-slab-body > p {
+  margin: 0 0 18px;
+  color: var(--color-muted);
+  font-size: 0.94rem;
+  line-height: 1.6;
+}
+
 .featured-slab-link {
   display: inline-flex;
   align-items: center;
   gap: 8px;
   color: var(--color-gold-dark);
   font-weight: 900;
+}
+
+.featured-footer-action {
+  display: flex;
+  justify-content: center;
+  margin-top: clamp(34px, 5vw, 52px);
+}
+
+.featured-footer-action .btn {
+  gap: 8px;
 }
 
 /* =========================
@@ -629,6 +646,14 @@
 
   .feature-strip-item:last-child {
     border-bottom: 0;
+  }
+
+  .featured-footer-action {
+    margin-top: 32px;
+  }
+
+  .featured-footer-action .btn {
+    width: 100%;
   }
 
   .dark-reserve-card {
