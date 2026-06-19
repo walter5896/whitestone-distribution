@@ -1,4 +1,16 @@
-import type { Slab } from "../types/slab";
+import type { Slab, SlabImage, SlabImageType } from "../types/slab";
+
+export type SupabaseSlabImage = {
+  id: string;
+  slab_id: string;
+  image_url: string;
+  alt_text: string | null;
+  image_type: SlabImageType | null;
+  sort_order: number | null;
+  is_primary: boolean | null;
+  is_visible: boolean | null;
+  created_at?: string;
+};
 
 export type SupabaseSlab = {
   id: string;
@@ -19,9 +31,46 @@ export type SupabaseSlab = {
   primary_image_url: string | null;
   created_at: string;
   updated_at: string;
+
+  slab_images?: SupabaseSlabImage[] | null;
 };
 
+function mapSupabaseSlabImage(row: SupabaseSlabImage): SlabImage {
+  return {
+    id: row.id,
+    slabId: row.slab_id,
+    imageUrl: row.image_url,
+    altText: row.alt_text ?? "",
+    imageType: row.image_type ?? "gallery",
+    sortOrder: row.sort_order ?? 0,
+    isPrimary: row.is_primary ?? false,
+    isVisible: row.is_visible ?? true,
+  };
+}
+
+function sortSlabImages(images: SlabImage[]) {
+  return [...images].sort((a, b) => {
+    if (a.isPrimary !== b.isPrimary) {
+      return Number(b.isPrimary) - Number(a.isPrimary);
+    }
+
+    return a.sortOrder - b.sortOrder;
+  });
+}
+
 export function mapSupabaseSlab(row: SupabaseSlab): Slab {
+  const mappedImages = sortSlabImages(
+    (row.slab_images ?? [])
+      .map(mapSupabaseSlabImage)
+      .filter((image) => image.isVisible && image.imageUrl)
+  );
+
+  const primaryImage =
+    mappedImages.find((image) => image.isPrimary)?.imageUrl ??
+    mappedImages[0]?.imageUrl ??
+    row.primary_image_url ??
+    "/images/slabs/taj-mahal-quartzite.png";
+
   return {
     id: row.id,
     slug: row.slug,
@@ -38,6 +87,7 @@ export function mapSupabaseSlab(row: SupabaseSlab): Slab {
     styleTags: row.style_tags ?? [],
     description: row.description ?? "",
     visualClass: "",
-    imageUrl: row.primary_image_url ?? "/images/slabs/taj-mahal-quartzite.png",
+    imageUrl: primaryImage,
+    images: mappedImages,
   };
 }

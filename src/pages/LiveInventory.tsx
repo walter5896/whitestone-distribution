@@ -159,15 +159,30 @@ export function LiveInventory() {
     return cloned;
   }, [filteredSlabs, sortBy]);
 
+  const resultLabel = isLoading
+    ? "Loading slabs..."
+    : `${sortedSlabs.length} slab${sortedSlabs.length === 1 ? "" : "s"} available`;
+
   return (
     <>
       <section className="inventory-page-hero">
-        <div className="container">
+        <div className="inventory-page-hero-bg" aria-hidden="true">
+          <img
+            src="/images/materials/featured/featured-quartzite-slab.png"
+            alt=""
+          />
+        </div>
+
+        <div className="container inventory-page-hero-inner">
           <div className="inventory-page-hero-copy">
             <p className="eyebrow">Live Inventory</p>
+
+            <div className="inventory-hero-rule" />
+
             <h1>Browse Current Stone Slabs</h1>
+
             <p>
-              View available inventory, compare materials, and call directly
+              Explore slabs available now, compare materials, and call directly
               for current pricing, availability, and reservation details.
             </p>
           </div>
@@ -175,9 +190,9 @@ export function LiveInventory() {
       </section>
 
       <section className="inventory-page-section">
-        <div className="container">
+        <div className="container inventory-page-container">
           <div className="inventory-layout">
-            <div className="inventory-sidebar-column">
+            <aside className="inventory-sidebar-column">
               <div className="inventory-sidebar-sticky">
                 <InventoryFilters
                   filters={filters}
@@ -189,24 +204,19 @@ export function LiveInventory() {
                   finishOptions={finishOptions}
                 />
               </div>
-            </div>
+            </aside>
 
-            <div className="inventory-main-column">
+            <main className="inventory-main-column">
               <div className="inventory-main-top">
                 <PricingNotice />
               </div>
 
               <div className="inventory-toolbar">
-                <div className="inventory-results-count">
-                  {isLoading
-                    ? "Loading slabs..."
-                    : `${sortedSlabs.length} slab${
-                        sortedSlabs.length === 1 ? "" : "s"
-                      } available`}
-                </div>
+                <div className="inventory-results-count">{resultLabel}</div>
 
                 <div className="inventory-toolbar-controls">
                   <label htmlFor="inventory-sort">Sort by</label>
+
                   <select
                     id="inventory-sort"
                     value={sortBy}
@@ -223,16 +233,17 @@ export function LiveInventory() {
 
               {isLoading && (
                 <div className="inventory-empty">
-                  <h2>Loading live inventory...</h2>
+                  <h2>Loading Live Inventory...</h2>
                   <p>
-                    Pulling current slab availability from Whitestone Distribution.
+                    Pulling current slab availability from Whitestone
+                    Distribution.
                   </p>
                 </div>
               )}
 
               {!isLoading && errorMessage && (
                 <div className="inventory-empty">
-                  <h2>Inventory unavailable</h2>
+                  <h2>Inventory Unavailable</h2>
                   <p>{errorMessage}</p>
                 </div>
               )}
@@ -240,7 +251,7 @@ export function LiveInventory() {
               {!isLoading && !errorMessage && (
                 <InventoryGrid slabs={sortedSlabs} />
               )}
-            </div>
+            </main>
           </div>
         </div>
       </section>

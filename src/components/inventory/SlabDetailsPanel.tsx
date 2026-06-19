@@ -1,4 +1,4 @@
-import { Phone, Ruler, Tag } from "lucide-react";
+import { Phone, Tag } from "lucide-react";
 import type { Slab } from "../../types/slab";
 import { PricingNotice } from "./PricingNotice";
 import { SlabStatusBadge } from "./SlabStatusBadge";
@@ -55,18 +55,20 @@ export function SlabDetailsPanel({ slab }: SlabDetailsPanelProps) {
         </div>
       </div>
 
-      <div className="slab-tags-block">
-        <h2>
-          <Tag size={18} />
-          Style Tags
-        </h2>
+      {slab.styleTags.length > 0 && (
+        <div className="slab-tags-block">
+          <h2>
+            <Tag size={18} />
+            Style Tags
+          </h2>
 
-        <div className="inventory-tags">
-          {slab.styleTags.map((tag) => (
-            <span key={tag}>{tag}</span>
-          ))}
+          <div className="inventory-tags">
+            {slab.styleTags.map((tag) => (
+              <span key={tag}>{tag}</span>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       <PricingNotice />
 
@@ -74,18 +76,13 @@ export function SlabDetailsPanel({ slab }: SlabDetailsPanelProps) {
         <h2>Interested in this slab?</h2>
         <p>
           Call directly for current pricing, availability, and reservation
-          confirmation.
+          details.
         </p>
 
         <div className="slab-actions">
           <a href="tel:8015550199" className="btn btn-primary">
             <Phone size={18} />
-            Call for Pricing
-          </a>
-
-          <a href="tel:8015550199" className="btn btn-secondary">
-            <Ruler size={18} />
-            Call to Reserve
+            Call for Pricing or to Reserve
           </a>
         </div>
       </div>

@@ -1,10 +1,15 @@
 import { supabase } from "./supabaseClient";
 import { mapSupabaseSlab, type SupabaseSlab } from "./slabMapper";
 
+const slabSelect = `
+  *,
+  slab_images (*)
+`;
+
 export async function getActiveSlabs() {
   const { data, error } = await supabase
     .from("slabs")
-    .select("*")
+    .select(slabSelect)
     .eq("is_active", true)
     .order("is_featured", { ascending: false })
     .order("is_new_arrival", { ascending: false })
@@ -20,7 +25,7 @@ export async function getActiveSlabs() {
 export async function getFeaturedSlabs(limit = 3) {
   const { data, error } = await supabase
     .from("slabs")
-    .select("*")
+    .select(slabSelect)
     .eq("is_active", true)
     .eq("is_featured", true)
     .limit(limit);
@@ -35,7 +40,7 @@ export async function getFeaturedSlabs(limit = 3) {
 export async function getSlabBySlug(slug: string) {
   const { data, error } = await supabase
     .from("slabs")
-    .select("*")
+    .select(slabSelect)
     .eq("slug", slug)
     .eq("is_active", true)
     .single();
