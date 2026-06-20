@@ -1,6 +1,6 @@
 import { supabase } from "./supabaseClient";
 import { mapSupabaseSlab, type SupabaseSlab } from "./slabMapper";
-import type { Slab } from "../types/slab";
+import type { Slab, SlabImageType } from "../types/slab";
 
 /* =========================
    STORAGE
@@ -185,8 +185,25 @@ export async function deleteInquiry(inquiryId: string) {
    ADMIN SLABS
 ========================= */
 
+const adminSlabSelect = `
+  *,
+  slab_images (*)
+`;
+
 type AdminSupabaseSlab = SupabaseSlab & {
   internal_notes?: string | null;
+};
+
+type SupabaseSlabImageRow = {
+  id: string;
+  slab_id: string;
+  image_url: string;
+  alt_text: string | null;
+  image_type: SlabImageType | null;
+  sort_order: number | null;
+  is_primary: boolean | null;
+  is_visible: boolean | null;
+  created_at?: string;
 };
 
 export type AdminSlab = Slab & {
@@ -235,21 +252,156 @@ export type AdminSlabCreatePayload = {
   primary_image_url?: string | null;
 };
 
+export type CreateAdminSlabImagePayload = {
+  slabId: string;
+  imageUrl: string;
+  altText?: string;
+  imageType?: SlabImageType;
+  sortOrder?: number;
+  isPrimary?: boolean;
+  isVisible?: boolean;
+};
+
+export type UploadAdminSlabGalleryImagePayload = {
+  slabId: string;
+  slabSlugOrName: string;
+  file: File;
+  altText?: string;
+  imageType?: SlabImageType;
+  isPrimary?: boolean;
+};
+
 function mapAdminSlab(row: AdminSupabaseSlab): AdminSlab {
+  const publicSlab = mapSupabaseSlab(row);
+
   return {
-    ...mapSupabaseSlab(row),
+    ...publicSlab,
     isActive: row.is_active,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
     internalNotes: row.internal_notes ?? "",
-    primaryImageUrl: row.primary_image_url ?? "",
+    primaryImageUrl: row.primary_image_url ?? publicSlab.imageUrl ?? "",
   };
+}
+
+async function getAdminSlabById(slabId: string) {
+  const { data, error } = await supabase
+    .from("slabs")
+    .select(adminSlabSelect)
+    .eq("id", slabId)
+    .single();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return mapAdminSlab(data as AdminSupabaseSlab);
+}
+
+async function getNextSlabImageSortOrder(slabId: string) {
+  const { data, error } = await supabase
+    .from("slab_images")
+    .select("sort_order")
+    .eq("slab_id", slabId)
+    .order("sort_order", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return ((data?.sort_order as number | null | undefined) ?? -1) + 1;
+}
+
+async function insertPrimarySlabImage(
+  slabId: string,
+  imageUrl: string,
+  altText: string
+) {
+  if (!imageUrl) {
+    return;
+  }
+
+  await supabase
+    .from("slab_images")
+    .update({
+      is_primary: false,
+      image_type: "gallery",
+    })
+    .eq("slab_id", slabId);
+
+  const { error } = await supabase.from("slab_images").insert({
+    slab_id: slabId,
+    image_url: imageUrl,
+    alt_text: altText,
+    image_type: "primary",
+    sort_order: 0,
+    is_primary: true,
+    is_visible: true,
+  });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+}
+
+async function syncPrimarySlabImageRecord(
+  slabId: string,
+  nextPrimaryImageUrl: string | null | undefined,
+  fallbackAltText: string
+) {
+  if (!nextPrimaryImageUrl) {
+    return;
+  }
+
+  const { data: currentPrimary, error: currentPrimaryError } = await supabase
+    .from("slab_images")
+    .select("*")
+    .eq("slab_id", slabId)
+    .eq("is_primary", true)
+    .maybeSingle();
+
+  if (currentPrimaryError) {
+    throw new Error(currentPrimaryError.message);
+  }
+
+  const currentPrimaryRow = currentPrimary as SupabaseSlabImageRow | null;
+
+  if (currentPrimaryRow?.image_url === nextPrimaryImageUrl) {
+    return;
+  }
+
+  if (currentPrimaryRow) {
+    const previousImageUrl = currentPrimaryRow.image_url;
+
+    const { error: updateImageError } = await supabase
+      .from("slab_images")
+      .update({
+        image_url: nextPrimaryImageUrl,
+        alt_text: currentPrimaryRow.alt_text || fallbackAltText,
+        image_type: "primary",
+        sort_order: 0,
+        is_primary: true,
+        is_visible: true,
+      })
+      .eq("id", currentPrimaryRow.id);
+
+    if (updateImageError) {
+      throw new Error(updateImageError.message);
+    }
+
+    await deleteSlabImageFromStorage(previousImageUrl);
+    return;
+  }
+
+  await insertPrimarySlabImage(slabId, nextPrimaryImageUrl, fallbackAltText);
 }
 
 export async function getAdminSlabs() {
   const { data, error } = await supabase
     .from("slabs")
-    .select("*")
+    .select(adminSlabSelect)
     .order("created_at", { ascending: false });
 
   if (error) {
@@ -299,13 +451,32 @@ export async function createAdminSlab(payload: AdminSlabCreatePayload) {
     throw new Error(error.message);
   }
 
-  return mapAdminSlab(data as AdminSupabaseSlab);
+  const createdSlab = data as AdminSupabaseSlab;
+
+  if (payload.primary_image_url) {
+    await insertPrimarySlabImage(
+      createdSlab.id,
+      payload.primary_image_url,
+      `${cleanName} primary slab photo`
+    );
+  }
+
+  return getAdminSlabById(createdSlab.id);
 }
 
 export async function updateAdminSlab(
   slabId: string,
   updates: AdminSlabUpdatePayload
 ) {
+  const shouldSyncPrimaryImage = Object.prototype.hasOwnProperty.call(
+    updates,
+    "primary_image_url"
+  );
+
+  const currentSlab = shouldSyncPrimaryImage
+    ? await getAdminSlabById(slabId)
+    : null;
+
   const { data, error } = await supabase
     .from("slabs")
     .update({
@@ -320,7 +491,17 @@ export async function updateAdminSlab(
     throw new Error(error.message);
   }
 
-  return mapAdminSlab(data as AdminSupabaseSlab);
+  const updatedRow = data as AdminSupabaseSlab;
+
+  if (shouldSyncPrimaryImage) {
+    await syncPrimarySlabImageRecord(
+      slabId,
+      updates.primary_image_url,
+      `${updates.name || currentSlab?.name || updatedRow.name} primary slab photo`
+    );
+  }
+
+  return getAdminSlabById(slabId);
 }
 
 export async function updateAdminSlabStatus(
@@ -351,18 +532,286 @@ export async function updateAdminSlabActive(
   return updateAdminSlab(slabId, { is_active: isActive });
 }
 
-export async function deleteAdminSlab(slabId: string) {
-  const { data: slab, error: fetchError } = await supabase
-    .from("slabs")
-    .select("primary_image_url")
-    .eq("id", slabId)
-    .single();
+/* =========================
+   ADMIN SLAB IMAGES
+========================= */
 
-  if (fetchError) {
-    throw new Error(fetchError.message);
+export async function createAdminSlabImage(
+  payload: CreateAdminSlabImagePayload
+) {
+  const cleanImageUrl = payload.imageUrl.trim();
+
+  if (!payload.slabId || !cleanImageUrl) {
+    throw new Error("Slab ID and image URL are required.");
   }
 
-  await deleteSlabImageFromStorage(slab?.primary_image_url);
+  const sortOrder =
+    payload.sortOrder ?? (await getNextSlabImageSortOrder(payload.slabId));
+
+  if (payload.isPrimary) {
+    await supabase
+      .from("slab_images")
+      .update({
+        is_primary: false,
+        image_type: "gallery",
+      })
+      .eq("slab_id", payload.slabId);
+  }
+
+  const { error } = await supabase.from("slab_images").insert({
+    slab_id: payload.slabId,
+    image_url: cleanImageUrl,
+    alt_text: payload.altText?.trim() || null,
+    image_type: payload.isPrimary
+      ? "primary"
+      : payload.imageType ?? "gallery",
+    sort_order: sortOrder,
+    is_primary: payload.isPrimary ?? false,
+    is_visible: payload.isVisible ?? true,
+  });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  if (payload.isPrimary) {
+    const { error: slabUpdateError } = await supabase
+      .from("slabs")
+      .update({
+        primary_image_url: cleanImageUrl,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", payload.slabId);
+
+    if (slabUpdateError) {
+      throw new Error(slabUpdateError.message);
+    }
+  }
+
+  return getAdminSlabById(payload.slabId);
+}
+
+export async function uploadAdminSlabGalleryImage(
+  payload: UploadAdminSlabGalleryImagePayload
+) {
+  const uploadResult = await uploadAdminSlabImage(
+    payload.file,
+    payload.slabSlugOrName
+  );
+
+  return createAdminSlabImage({
+    slabId: payload.slabId,
+    imageUrl: uploadResult.publicUrl,
+    altText: payload.altText,
+    imageType: payload.imageType ?? "gallery",
+    isPrimary: payload.isPrimary ?? false,
+    isVisible: true,
+  });
+}
+
+export async function setAdminSlabPrimaryImage(
+  slabId: string,
+  imageId: string
+) {
+  const { data: targetImage, error: targetError } = await supabase
+    .from("slab_images")
+    .select("*")
+    .eq("id", imageId)
+    .eq("slab_id", slabId)
+    .single();
+
+  if (targetError) {
+    throw new Error(targetError.message);
+  }
+
+  const image = targetImage as SupabaseSlabImageRow;
+
+  const { error: resetError } = await supabase
+    .from("slab_images")
+    .update({
+      is_primary: false,
+      image_type: "gallery",
+    })
+    .eq("slab_id", slabId);
+
+  if (resetError) {
+    throw new Error(resetError.message);
+  }
+
+  const { error: setPrimaryError } = await supabase
+    .from("slab_images")
+    .update({
+      is_primary: true,
+      is_visible: true,
+      image_type: "primary",
+      sort_order: 0,
+    })
+    .eq("id", imageId);
+
+  if (setPrimaryError) {
+    throw new Error(setPrimaryError.message);
+  }
+
+  const { error: slabUpdateError } = await supabase
+    .from("slabs")
+    .update({
+      primary_image_url: image.image_url,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", slabId);
+
+  if (slabUpdateError) {
+    throw new Error(slabUpdateError.message);
+  }
+
+  return getAdminSlabById(slabId);
+}
+
+export async function updateAdminSlabImageVisibility(
+  slabId: string,
+  imageId: string,
+  isVisible: boolean
+) {
+  const { data: targetImage, error: targetError } = await supabase
+    .from("slab_images")
+    .select("*")
+    .eq("id", imageId)
+    .eq("slab_id", slabId)
+    .single();
+
+  if (targetError) {
+    throw new Error(targetError.message);
+  }
+
+  const image = targetImage as SupabaseSlabImageRow;
+
+  if (image.is_primary && !isVisible) {
+    throw new Error("Primary slab images must stay visible.");
+  }
+
+  const { error } = await supabase
+    .from("slab_images")
+    .update({ is_visible: isVisible })
+    .eq("id", imageId);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return getAdminSlabById(slabId);
+}
+
+export async function updateAdminSlabImageType(
+  slabId: string,
+  imageId: string,
+  imageType: Exclude<SlabImageType, "primary">
+) {
+  const { error } = await supabase
+    .from("slab_images")
+    .update({ image_type: imageType })
+    .eq("id", imageId)
+    .eq("slab_id", slabId)
+    .eq("is_primary", false);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return getAdminSlabById(slabId);
+}
+
+export async function moveAdminSlabImage(
+  slabId: string,
+  imageId: string,
+  direction: "up" | "down"
+) {
+  const { data, error } = await supabase
+    .from("slab_images")
+    .select("*")
+    .eq("slab_id", slabId)
+    .order("sort_order", { ascending: true });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  const images = (data as SupabaseSlabImageRow[]) ?? [];
+  const currentIndex = images.findIndex((image) => image.id === imageId);
+
+  if (currentIndex === -1) {
+    throw new Error("Image could not be found.");
+  }
+
+  const swapIndex = direction === "up" ? currentIndex - 1 : currentIndex + 1;
+  const currentImage = images[currentIndex];
+  const swapImage = images[swapIndex];
+
+  if (!swapImage) {
+    return getAdminSlabById(slabId);
+  }
+
+  const currentSortOrder = currentImage.sort_order ?? currentIndex;
+  const swapSortOrder = swapImage.sort_order ?? swapIndex;
+
+  const { error: currentUpdateError } = await supabase
+    .from("slab_images")
+    .update({ sort_order: swapSortOrder })
+    .eq("id", currentImage.id);
+
+  if (currentUpdateError) {
+    throw new Error(currentUpdateError.message);
+  }
+
+  const { error: swapUpdateError } = await supabase
+    .from("slab_images")
+    .update({ sort_order: currentSortOrder })
+    .eq("id", swapImage.id);
+
+  if (swapUpdateError) {
+    throw new Error(swapUpdateError.message);
+  }
+
+  return getAdminSlabById(slabId);
+}
+
+export async function deleteAdminSlabImage(slabId: string, imageId: string) {
+  const { data, error } = await supabase
+    .from("slab_images")
+    .select("*")
+    .eq("id", imageId)
+    .eq("slab_id", slabId)
+    .single();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  const image = data as SupabaseSlabImageRow;
+
+  if (image.is_primary) {
+    throw new Error("Set another image as primary before deleting this one.");
+  }
+
+  await deleteSlabImageFromStorage(image.image_url);
+
+  const { error: deleteError } = await supabase
+    .from("slab_images")
+    .delete()
+    .eq("id", imageId);
+
+  if (deleteError) {
+    throw new Error(deleteError.message);
+  }
+
+  return getAdminSlabById(slabId);
+}
+
+export async function deleteAdminSlab(slabId: string) {
+  const slab = await getAdminSlabById(slabId);
+
+  for (const image of slab.images) {
+    await deleteSlabImageFromStorage(image.imageUrl);
+  }
 
   const { error: deleteError } = await supabase
     .from("slabs")

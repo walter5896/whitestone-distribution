@@ -2,9 +2,12 @@ import { useEffect, useMemo, useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
 import { Link } from "react-router-dom";
 import {
+  ArrowDown,
   ArrowLeft,
   ArrowRight,
+  ArrowUp,
   Eye,
+  EyeOff,
   Gem,
   Image,
   Pencil,
@@ -22,16 +25,22 @@ import {
 import {
   createAdminSlab,
   deleteAdminSlab,
+  deleteAdminSlabImage,
   getAdminSlabs,
+  moveAdminSlabImage,
+  setAdminSlabPrimaryImage,
   updateAdminSlab,
   updateAdminSlabActive,
   updateAdminSlabFeatured,
+  updateAdminSlabImageType,
+  updateAdminSlabImageVisibility,
   updateAdminSlabNewArrival,
   updateAdminSlabStatus,
+  uploadAdminSlabGalleryImage,
   uploadAdminSlabImage,
 } from "../../lib/adminQueries";
 import type { AdminSlab } from "../../lib/adminQueries";
-import type { Slab } from "../../types/slab";
+import type { Slab, SlabImageType } from "../../types/slab";
 
 const slabStatuses: Slab["status"][] = [
   "available",
@@ -41,6 +50,12 @@ const slabStatuses: Slab["status"][] = [
 ];
 
 const inventoryTypes: Slab["inventoryType"][] = ["full_slab", "remnant"];
+
+const galleryImageTypes: Exclude<SlabImageType, "primary">[] = [
+  "gallery",
+  "detail",
+  "inspiration",
+];
 
 type AdminSlabFormState = {
   name: string;
@@ -147,6 +162,16 @@ function getSelectedFileName(file: File | null) {
   return file.name;
 }
 
+function getSortedSlabImages(slab: AdminSlab) {
+  return [...slab.images].sort((a, b) => {
+    if (a.isPrimary !== b.isPrimary) {
+      return Number(b.isPrimary) - Number(a.isPrimary);
+    }
+
+    return a.sortOrder - b.sortOrder;
+  });
+}
+
 export function AdminSlabs() {
   const [slabs, setSlabs] = useState<AdminSlab[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -168,6 +193,17 @@ export function AdminSlabs() {
   );
   const [createImageFile, setCreateImageFile] = useState<File | null>(null);
   const [isCreating, setIsCreating] = useState(false);
+  const [galleryFiles, setGalleryFiles] = useState<Record<string, File | null>>(
+    {}
+  );
+  const [galleryAltTexts, setGalleryAltTexts] = useState<
+    Record<string, string>
+  >({});
+  const [galleryTypes, setGalleryTypes] = useState<
+    Record<string, Exclude<SlabImageType, "primary">>
+  >({});
+  const [uploadingGalleryId, setUploadingGalleryId] = useState("");
+  const [imageActionId, setImageActionId] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
   async function loadSlabs(options?: { showRefreshingState?: boolean }) {
@@ -271,6 +307,14 @@ export function AdminSlabs() {
     );
   }, [slabs]);
 
+  function replaceSlabInState(updatedSlab: AdminSlab) {
+    setSlabs((currentSlabs) =>
+      currentSlabs.map((slab) =>
+        slab.id === updatedSlab.id ? updatedSlab : slab
+      )
+    );
+  }
+
   function handleCreateImageSelect(event: ChangeEvent<HTMLInputElement>) {
     const selectedFile = event.target.files?.[0] ?? null;
     setCreateImageFile(selectedFile);
@@ -279,6 +323,52 @@ export function AdminSlabs() {
   function handleEditImageSelect(event: ChangeEvent<HTMLInputElement>) {
     const selectedFile = event.target.files?.[0] ?? null;
     setEditImageFile(selectedFile);
+  }
+
+  function handleGalleryImageSelect(
+    slabId: string,
+    event: ChangeEvent<HTMLInputElement>
+  ) {
+    const selectedFile = event.target.files?.[0] ?? null;
+
+    setGalleryFiles((currentFiles) => ({
+      ...currentFiles,
+      [slabId]: selectedFile,
+    }));
+  }
+
+  function updateGalleryAltText(slabId: string, value: string) {
+    setGalleryAltTexts((currentAltTexts) => ({
+      ...currentAltTexts,
+      [slabId]: value,
+    }));
+  }
+
+  function updateGalleryType(
+    slabId: string,
+    value: Exclude<SlabImageType, "primary">
+  ) {
+    setGalleryTypes((currentTypes) => ({
+      ...currentTypes,
+      [slabId]: value,
+    }));
+  }
+
+  function resetGalleryUploadState(slabId: string) {
+    setGalleryFiles((currentFiles) => ({
+      ...currentFiles,
+      [slabId]: null,
+    }));
+
+    setGalleryAltTexts((currentAltTexts) => ({
+      ...currentAltTexts,
+      [slabId]: "",
+    }));
+
+    setGalleryTypes((currentTypes) => ({
+      ...currentTypes,
+      [slabId]: "gallery",
+    }));
   }
 
   function openEditForm(slab: AdminSlab) {
@@ -466,12 +556,7 @@ export function AdminSlabs() {
         primary_image_url: uploadedImageUrl || editForm.primaryImageUrl || null,
       });
 
-      setSlabs((currentSlabs) =>
-        currentSlabs.map((currentSlab) =>
-          currentSlab.id === slab.id ? updatedSlab : currentSlab
-        )
-      );
-
+      replaceSlabInState(updatedSlab);
       closeEditForm();
     } catch (error) {
       console.error("Failed to save slab details:", error);
@@ -480,6 +565,156 @@ export function AdminSlabs() {
       );
     } finally {
       setSavingId("");
+    }
+  }
+
+  async function handleGalleryUpload(event: FormEvent, slab: AdminSlab) {
+    event.preventDefault();
+
+    const selectedFile = galleryFiles[slab.id] ?? null;
+
+    if (!selectedFile) {
+      setErrorMessage("Choose a gallery image before uploading.");
+      return;
+    }
+
+    try {
+      setUploadingGalleryId(slab.id);
+      setErrorMessage("");
+
+      const selectedImageType = galleryTypes[slab.id] || "gallery";
+
+      const updatedSlab = await uploadAdminSlabGalleryImage({
+        slabId: slab.id,
+        slabSlugOrName: slab.slug || slab.name,
+        file: selectedFile,
+        altText:
+          galleryAltTexts[slab.id]?.trim() ||
+          `${slab.name} ${formatLabel(selectedImageType)} image`,
+        imageType: selectedImageType,
+        isPrimary: false,
+      });
+
+      replaceSlabInState(updatedSlab);
+      resetGalleryUploadState(slab.id);
+    } catch (error) {
+      console.error("Failed to upload gallery image:", error);
+      setErrorMessage(
+        "The gallery image could not be uploaded. Check storage bucket setup or admin permissions."
+      );
+    } finally {
+      setUploadingGalleryId("");
+    }
+  }
+
+  async function handleSetPrimaryImage(slab: AdminSlab, imageId: string) {
+    try {
+      setImageActionId(`${slab.id}:${imageId}:primary`);
+      setErrorMessage("");
+
+      const updatedSlab = await setAdminSlabPrimaryImage(slab.id, imageId);
+      replaceSlabInState(updatedSlab);
+    } catch (error) {
+      console.error("Failed to set primary image:", error);
+      setErrorMessage("The primary image could not be updated.");
+    } finally {
+      setImageActionId("");
+    }
+  }
+
+  async function handleImageVisibilityToggle(
+    slab: AdminSlab,
+    imageId: string,
+    isVisible: boolean
+  ) {
+    try {
+      setImageActionId(`${slab.id}:${imageId}:visibility`);
+      setErrorMessage("");
+
+      const updatedSlab = await updateAdminSlabImageVisibility(
+        slab.id,
+        imageId,
+        !isVisible
+      );
+
+      replaceSlabInState(updatedSlab);
+    } catch (error) {
+      console.error("Failed to update image visibility:", error);
+      setErrorMessage(
+        error instanceof Error
+          ? error.message
+          : "The image visibility could not be updated."
+      );
+    } finally {
+      setImageActionId("");
+    }
+  }
+
+  async function handleImageTypeChange(
+    slab: AdminSlab,
+    imageId: string,
+    imageType: Exclude<SlabImageType, "primary">
+  ) {
+    try {
+      setImageActionId(`${slab.id}:${imageId}:type`);
+      setErrorMessage("");
+
+      const updatedSlab = await updateAdminSlabImageType(
+        slab.id,
+        imageId,
+        imageType
+      );
+
+      replaceSlabInState(updatedSlab);
+    } catch (error) {
+      console.error("Failed to update image type:", error);
+      setErrorMessage("The image type could not be updated.");
+    } finally {
+      setImageActionId("");
+    }
+  }
+
+  async function handleImageMove(
+    slab: AdminSlab,
+    imageId: string,
+    direction: "up" | "down"
+  ) {
+    try {
+      setImageActionId(`${slab.id}:${imageId}:move-${direction}`);
+      setErrorMessage("");
+
+      const updatedSlab = await moveAdminSlabImage(slab.id, imageId, direction);
+      replaceSlabInState(updatedSlab);
+    } catch (error) {
+      console.error("Failed to move image:", error);
+      setErrorMessage("The image order could not be updated.");
+    } finally {
+      setImageActionId("");
+    }
+  }
+
+  async function handleImageDelete(slab: AdminSlab, imageId: string) {
+    const confirmed = window.confirm(
+      `Delete this image from "${slab.name}"?\n\nPrimary images cannot be deleted until another image is set as primary.`
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      setImageActionId(`${slab.id}:${imageId}:delete`);
+      setErrorMessage("");
+
+      const updatedSlab = await deleteAdminSlabImage(slab.id, imageId);
+      replaceSlabInState(updatedSlab);
+    } catch (error) {
+      console.error("Failed to delete image:", error);
+      setErrorMessage(
+        error instanceof Error ? error.message : "The image could not be deleted."
+      );
+    } finally {
+      setImageActionId("");
     }
   }
 
@@ -983,8 +1218,11 @@ export function AdminSlabs() {
               const isUpdating =
                 updatingId === slab.id ||
                 savingId === slab.id ||
-                deletingId === slab.id;
+                deletingId === slab.id ||
+                uploadingGalleryId === slab.id ||
+                imageActionId.startsWith(`${slab.id}:`);
               const isEditing = editingId === slab.id && editForm;
+              const sortedImages = getSortedSlabImages(slab);
 
               return (
                 <article key={slab.id} className="admin-slab-management-card">
@@ -1120,10 +1358,11 @@ export function AdminSlabs() {
                     </div>
 
                     {isEditing && editForm && (
-                      <form
-                        className="admin-slab-edit-form"
-                        onSubmit={(event) => handleEditSubmit(event, slab)}
-                      >
+                      <>
+                        <form
+                          className="admin-slab-edit-form"
+                          onSubmit={(event) => handleEditSubmit(event, slab)}
+                        >
                         <div className="admin-form-grid">
                           <label>
                             Slab Name
@@ -1320,6 +1559,271 @@ export function AdminSlabs() {
                           </button>
                         </div>
                       </form>
+
+                        <div className="admin-slab-image-manager">
+                          <div className="admin-slab-image-manager-header">
+                            <div>
+                              <p className="eyebrow">Slab Images</p>
+                              <h3>Gallery Manager</h3>
+                              <p>
+                                Control the main inventory image, detail page
+                                thumbnails, image order, and inspiration photos.
+                              </p>
+                            </div>
+                          </div>
+
+                          <form
+                            className="admin-gallery-upload-form"
+                            onSubmit={(event) => handleGalleryUpload(event, slab)}
+                          >
+                            <div className="admin-gallery-upload-grid">
+                              <div className="admin-file-upload-field">
+                                <span>Add Gallery Image</span>
+
+                                <label className="admin-file-upload-box admin-gallery-upload-box">
+                                  <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={(event) =>
+                                      handleGalleryImageSelect(slab.id, event)
+                                    }
+                                    disabled={uploadingGalleryId === slab.id}
+                                  />
+
+                                  <Upload size={18} />
+                                  <strong>Choose Additional Image</strong>
+                                  <small>
+                                    {getSelectedFileName(
+                                      galleryFiles[slab.id] ?? null
+                                    )}
+                                  </small>
+                                </label>
+                              </div>
+
+                              <label>
+                                Image Type
+                                <select
+                                  value={galleryTypes[slab.id] || "gallery"}
+                                  onChange={(event) =>
+                                    updateGalleryType(
+                                      slab.id,
+                                      event.target.value as Exclude<
+                                        SlabImageType,
+                                        "primary"
+                                      >
+                                    )
+                                  }
+                                >
+                                  {galleryImageTypes.map((imageType) => (
+                                    <option key={imageType} value={imageType}>
+                                      {formatLabel(imageType)}
+                                    </option>
+                                  ))}
+                                </select>
+                              </label>
+
+                              <label>
+                                Alt Text
+                                <input
+                                  type="text"
+                                  value={galleryAltTexts[slab.id] || ""}
+                                  onChange={(event) =>
+                                    updateGalleryAltText(
+                                      slab.id,
+                                      event.target.value
+                                    )
+                                  }
+                                  placeholder={`${slab.name} detail image`}
+                                />
+                              </label>
+                            </div>
+
+                            <div className="admin-form-actions">
+                              <button
+                                type="submit"
+                                className="btn btn-primary"
+                                disabled={uploadingGalleryId === slab.id}
+                              >
+                                <Upload size={16} />
+                                {uploadingGalleryId === slab.id
+                                  ? "Uploading..."
+                                  : "Upload Gallery Image"}
+                              </button>
+                            </div>
+                          </form>
+
+                          {sortedImages.length === 0 ? (
+                            <div className="admin-state-card">
+                              <h3>No slab images found.</h3>
+                              <p>
+                                Upload a primary image or gallery image to build
+                                the detail page carousel.
+                              </p>
+                            </div>
+                          ) : (
+                            <div className="admin-slab-image-grid">
+                              {sortedImages.map((image, index) => {
+                                const isFirst = index === 0;
+                                const isLast = index === sortedImages.length - 1;
+                                const isImageBusy = imageActionId.startsWith(
+                                  `${slab.id}:${image.id}:`
+                                );
+
+                                return (
+                                  <article
+                                    key={image.id}
+                                    className={
+                                      image.isPrimary
+                                        ? "admin-slab-image-card admin-slab-image-card-primary"
+                                        : "admin-slab-image-card"
+                                    }
+                                  >
+                                    <div className="admin-slab-image-preview">
+                                      <img
+                                        src={image.imageUrl}
+                                        alt={image.altText || slab.name}
+                                      />
+
+                                      <div className="admin-slab-image-badges">
+                                        {image.isPrimary && <span>Primary</span>}
+                                        {!image.isVisible && <span>Hidden</span>}
+                                        <span>{formatLabel(image.imageType)}</span>
+                                      </div>
+                                    </div>
+
+                                    <div className="admin-slab-image-body">
+                                      <p>
+                                        {image.altText ||
+                                          `${slab.name} slab image`}
+                                      </p>
+
+                                      <label>
+                                        Type
+                                        <select
+                                          value={
+                                            image.isPrimary
+                                              ? "primary"
+                                              : image.imageType
+                                          }
+                                          disabled={
+                                            image.isPrimary || isImageBusy
+                                          }
+                                          onChange={(event) =>
+                                            handleImageTypeChange(
+                                              slab,
+                                              image.id,
+                                              event.target.value as Exclude<
+                                                SlabImageType,
+                                                "primary"
+                                              >
+                                            )
+                                          }
+                                        >
+                                          <option value="primary">
+                                            Primary
+                                          </option>
+                                          {galleryImageTypes.map((imageType) => (
+                                            <option
+                                              key={imageType}
+                                              value={imageType}
+                                            >
+                                              {formatLabel(imageType)}
+                                            </option>
+                                          ))}
+                                        </select>
+                                      </label>
+
+                                      <div className="admin-slab-image-actions">
+                                        <button
+                                          type="button"
+                                          className="btn btn-secondary"
+                                          disabled={
+                                            image.isPrimary || isImageBusy
+                                          }
+                                          onClick={() =>
+                                            handleSetPrimaryImage(slab, image.id)
+                                          }
+                                        >
+                                          <Star size={15} />
+                                          Set Primary
+                                        </button>
+
+                                        <button
+                                          type="button"
+                                          className="btn btn-secondary"
+                                          disabled={
+                                            image.isPrimary || isImageBusy
+                                          }
+                                          onClick={() =>
+                                            handleImageVisibilityToggle(
+                                              slab,
+                                              image.id,
+                                              image.isVisible
+                                            )
+                                          }
+                                        >
+                                          {image.isVisible ? (
+                                            <EyeOff size={15} />
+                                          ) : (
+                                            <Eye size={15} />
+                                          )}
+                                          {image.isVisible ? "Hide" : "Show"}
+                                        </button>
+
+                                        <button
+                                          type="button"
+                                          className="btn btn-secondary"
+                                          disabled={isFirst || isImageBusy}
+                                          onClick={() =>
+                                            handleImageMove(
+                                              slab,
+                                              image.id,
+                                              "up"
+                                            )
+                                          }
+                                        >
+                                          <ArrowUp size={15} />
+                                          Up
+                                        </button>
+
+                                        <button
+                                          type="button"
+                                          className="btn btn-secondary"
+                                          disabled={isLast || isImageBusy}
+                                          onClick={() =>
+                                            handleImageMove(
+                                              slab,
+                                              image.id,
+                                              "down"
+                                            )
+                                          }
+                                        >
+                                          <ArrowDown size={15} />
+                                          Down
+                                        </button>
+
+                                        <button
+                                          type="button"
+                                          className="btn btn-secondary admin-danger-button"
+                                          disabled={
+                                            image.isPrimary || isImageBusy
+                                          }
+                                          onClick={() =>
+                                            handleImageDelete(slab, image.id)
+                                          }
+                                        >
+                                          <Trash2 size={15} />
+                                          Delete
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </article>
+                                );
+                              })}
+                            </div>
+                          )}
+                        </div>
+                      </>
                     )}
                   </div>
                 </article>

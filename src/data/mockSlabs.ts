@@ -19,6 +19,18 @@ export const mockSlabs: Slab[] = [
       "Warm cream quartzite with soft gold movement, ideal for luxury kitchens and large islands.",
     visualClass: "slab-visual-taj",
     imageUrl: "/images/slabs/taj-mahal-quartzite.png",
+    images: [
+      {
+        id: "slab-image-001-primary",
+        slabId: "slab-001",
+        imageUrl: "/images/slabs/taj-mahal-quartzite.png",
+        altText: "Taj Mahal Quartzite primary slab photo",
+        imageType: "primary",
+        sortOrder: 0,
+        isPrimary: true,
+        isVisible: true,
+      },
+    ],
   },
   {
     id: "slab-002",
@@ -38,6 +50,18 @@ export const mockSlabs: Slab[] = [
       "Bright white marble with gold and gray veining for refined statement spaces.",
     visualClass: "slab-visual-calacatta",
     imageUrl: "/images/slabs/calacatta-gold-marble.png",
+    images: [
+      {
+        id: "slab-image-002-primary",
+        slabId: "slab-002",
+        imageUrl: "/images/slabs/calacatta-gold-marble.png",
+        altText: "Calacatta Gold Marble primary slab photo",
+        imageType: "primary",
+        sortOrder: 0,
+        isPrimary: true,
+        isVisible: true,
+      },
+    ],
   },
   {
     id: "slab-003",
@@ -57,6 +81,18 @@ export const mockSlabs: Slab[] = [
       "Dark dramatic granite with sweeping movement and warm metallic accents.",
     visualClass: "slab-visual-black",
     imageUrl: "/images/slabs/black-fusion-granite.png",
+    images: [
+      {
+        id: "slab-image-003-primary",
+        slabId: "slab-003",
+        imageUrl: "/images/slabs/black-fusion-granite.png",
+        altText: "Black Fusion Granite primary slab photo",
+        imageType: "primary",
+        sortOrder: 0,
+        isPrimary: true,
+        isVisible: true,
+      },
+    ],
   },
   {
     id: "slab-004",
@@ -76,5 +112,17 @@ export const mockSlabs: Slab[] = [
       "Rare green-blue exotic stone for bold feature walls, islands, and custom statement pieces.",
     visualClass: "slab-visual-green",
     imageUrl: "/images/slabs/emerald-exotic-stone.png",
+    images: [
+      {
+        id: "slab-image-004-primary",
+        slabId: "slab-004",
+        imageUrl: "/images/slabs/emerald-exotic-stone.png",
+        altText: "Emerald Exotic Stone primary slab photo",
+        imageType: "primary",
+        sortOrder: 0,
+        isPrimary: true,
+        isVisible: true,
+      },
+    ],
   },
 ];
