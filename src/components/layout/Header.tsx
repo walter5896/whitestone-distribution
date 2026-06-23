@@ -13,12 +13,21 @@ export function Header() {
   return (
     <header className="site-header">
       <div className="container header-inner">
-        <NavLink to="/" className="brand" aria-label="Whitestone Distribution home">
+        <NavLink
+          to="/"
+          className="brand"
+          aria-label="Whitestone Distribution home"
+        >
           <img
             src="/logo/whitestone-logo-transparent.png"
             alt="Whitestone Distribution logo"
             className="brand-logo"
           />
+
+          <span className="brand-text" aria-hidden="true">
+            <span className="brand-name">Whitestone</span>
+            <span className="brand-tagline">Distribution</span>
+          </span>
         </NavLink>
 
         <nav className="desktop-nav" aria-label="Main navigation">
