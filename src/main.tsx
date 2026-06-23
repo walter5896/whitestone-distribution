@@ -13,6 +13,7 @@ import "./styles/materials.css";
 import "./styles/fabricators.css";
 import "./styles/forms.css";
 import "./styles/about.css";
+import "./styles/contact.css";
 import "./styles/admin.css";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
