@@ -1,5 +1,6 @@
+import { useState } from "react";
 import { NavLink } from "react-router-dom";
-import { Phone } from "lucide-react";
+import { Menu, Phone, X } from "lucide-react";
 
 const navItems = [
   { label: "Live Inventory", path: "/live-inventory" },
@@ -10,17 +11,24 @@ const navItems = [
 ];
 
 export function Header() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  function closeMenu() {
+    setIsMenuOpen(false);
+  }
+
   return (
     <header className="site-header">
       <div className="container header-inner">
         <NavLink
           to="/"
           className="brand"
-          aria-label="Whitestone Distribution home"
+          aria-label="Whitestone home"
+          onClick={closeMenu}
         >
           <img
             src="/logo/whitestone-logo-transparent.png"
-            alt="Whitestone Distribution logo"
+            alt="Whitestone logo"
             className="brand-logo"
           />
 
@@ -48,7 +56,46 @@ export function Header() {
           <Phone size={16} />
           Call to Reserve
         </a>
+
+        <button
+          type="button"
+          className="mobile-menu-toggle"
+          aria-label={isMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+          aria-expanded={isMenuOpen}
+          onClick={() => setIsMenuOpen((current) => !current)}
+        >
+          {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
       </div>
+
+      <nav
+        className={isMenuOpen ? "mobile-nav open" : "mobile-nav"}
+        aria-label="Mobile navigation"
+      >
+        <div className="container mobile-nav-inner">
+          {navItems.map((item) => (
+            <NavLink
+              key={item.path}
+              to={item.path}
+              onClick={closeMenu}
+              className={({ isActive }) =>
+                isActive ? "mobile-nav-link active" : "mobile-nav-link"
+              }
+            >
+              {item.label}
+            </NavLink>
+          ))}
+
+          <a
+            href="tel:8015550199"
+            className="mobile-nav-cta"
+            onClick={closeMenu}
+          >
+            <Phone size={17} />
+            Call to Reserve
+          </a>
+        </div>
+      </nav>
     </header>
   );
 }
