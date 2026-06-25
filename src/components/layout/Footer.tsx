@@ -8,13 +8,18 @@ export function Footer() {
         <div className="footer-brand-block">
           <img
             src="/logo/whitestone-logo-transparent.png"
-            alt="Whitestone Distribution logo"
+            alt="Whitestone logo"
             className="footer-logo"
           />
-          <h2 className="footer-brand">Whitestone Distribution</h2>
+
+          <div className="footer-brand-lockup">
+            <h2 className="footer-brand">Whitestone</h2>
+            <p className="footer-brand-tagline">Wholesale Slab Distribution</p>
+          </div>
+
           <p>
-            Your trusted source for premium natural and engineered stone. Live
-            inventory, direct communication, and dependable service.
+            Wholesale slab sourcing and distribution for fabricators, designers,
+            builders, and project-based stone needs across Utah.
           </p>
         </div>
 
@@ -47,8 +52,8 @@ export function Footer() {
       </div>
 
       <div className="footer-bottom">
-        © {new Date().getFullYear()} Whitestone Distribution. All rights
-        reserved.
+        © {new Date().getFullYear()} Whitestone. Wholesale slab distribution.
+        All rights reserved.
       </div>
     </footer>
   );

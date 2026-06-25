@@ -34,7 +34,7 @@ export function Header() {
 
           <span className="brand-text" aria-hidden="true">
             <span className="brand-name">Whitestone</span>
-            <span className="brand-tagline">Distribution</span>
+            <span className="brand-tagline">Wholesale Slab Distribution</span>
           </span>
         </NavLink>
 
@@ -60,7 +60,9 @@ export function Header() {
         <button
           type="button"
           className="mobile-menu-toggle"
-          aria-label={isMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+          aria-label={
+            isMenuOpen ? "Close navigation menu" : "Open navigation menu"
+          }
           aria-expanded={isMenuOpen}
           onClick={() => setIsMenuOpen((current) => !current)}
         >
