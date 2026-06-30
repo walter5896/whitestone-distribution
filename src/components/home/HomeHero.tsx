@@ -27,7 +27,7 @@ export function HomeHero() {
               Explore Current Inventory
             </Link>
 
-            <a href="tel:8015550199" className="btn btn-secondary">
+            <a href="tel:8014009496" className="btn btn-secondary">
               <Phone size={17} />
               Call for Pricing
             </a>

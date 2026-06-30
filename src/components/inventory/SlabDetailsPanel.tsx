@@ -80,7 +80,7 @@ export function SlabDetailsPanel({ slab }: SlabDetailsPanelProps) {
         </p>
 
         <div className="slab-actions">
-          <a href="tel:8015550199" className="btn btn-primary">
+          <a href="tel:8014009496" className="btn btn-primary">
             <Phone size={18} />
             Call for Pricing or to Reserve
           </a>

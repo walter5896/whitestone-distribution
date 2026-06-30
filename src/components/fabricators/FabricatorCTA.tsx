@@ -19,7 +19,7 @@ export function FabricatorCTA() {
             View Inventory
           </Link>
 
-          <a href="tel:8015550199" className="btn btn-secondary">
+          <a href="tel:8014009496" className="btn btn-secondary">
             <Phone size={18} />
             Call Whitestone
           </a>

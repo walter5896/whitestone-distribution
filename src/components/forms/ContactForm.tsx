@@ -178,7 +178,7 @@ export function ContactForm() {
       <div className="form-grid">
         <label>
           Phone Number
-          <input type="tel" name="phone" placeholder="(801) 555-0199" />
+          <input type="tel" name="phone" placeholder="(801) 400-9496" />
         </label>
 
         <label>

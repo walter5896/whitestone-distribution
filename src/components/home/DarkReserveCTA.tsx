@@ -17,9 +17,9 @@ export function DarkReserveCTA() {
           </p>
         </div>
 
-        <a href="tel:8015550199" className="dark-reserve-button">
+        <a href="tel:8014009496" className="dark-reserve-button">
           <Phone size={18} />
-          (801) 555-0199
+          (801) 400-9496
         </a>
       </div>
     </section>

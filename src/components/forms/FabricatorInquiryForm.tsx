@@ -92,7 +92,7 @@ export function FabricatorInquiryForm() {
       <div className="form-grid">
         <label>
           Phone
-          <input type="tel" name="phone" placeholder="(801) 555-0199" />
+          <input type="tel" name="phone" placeholder="(801) 400-9496" />
         </label>
 
         <label>

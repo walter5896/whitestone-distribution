@@ -52,7 +52,7 @@ export function Header() {
           ))}
         </nav>
 
-        <a href="tel:8015550199" className="header-cta">
+        <a href="tel:8014009496" className="header-cta">
           <Phone size={16} />
           Call to Reserve
         </a>
@@ -89,7 +89,7 @@ export function Header() {
           ))}
 
           <a
-            href="tel:8015550199"
+            href="tel:8014009496"
             className="mobile-nav-cta"
             onClick={closeMenu}
           >

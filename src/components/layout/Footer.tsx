@@ -39,13 +39,13 @@ export function Footer() {
         <div>
           <h3>Contact</h3>
           <p>
-            <Phone size={15} /> (801) 555-0199
+            <Phone size={15} /> (801) 400-9496
           </p>
           <p>
-            <Mail size={15} /> sales@whitestonedistribution.com
+            <Mail size={15} /> uvgutah@gmail.com
           </p>
           <p>
-            <MapPin size={15} /> Utah Valley, Utah
+            <MapPin size={15} /> 1616 S State Street, Provo, Utah
           </p>
           <p>By appointment / call ahead</p>
         </div>

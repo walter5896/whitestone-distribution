@@ -187,6 +187,124 @@
 }
 
 /* =========================
+   PRE-ARRIVAL SAVINGS
+========================= */
+
+.pre-arrival-section {
+  padding: 34px 0;
+  background: var(--color-surface);
+}
+
+.pre-arrival-card {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(300px, 0.65fr);
+  gap: 34px;
+  align-items: stretch;
+  padding: clamp(34px, 5vw, 58px);
+  border: 1px solid rgba(184, 137, 58, 0.28);
+  border-radius: var(--radius-md);
+  background:
+    linear-gradient(135deg, rgba(23, 20, 16, 0.96), rgba(23, 20, 16, 0.98)),
+    radial-gradient(circle at top right, rgba(184, 137, 58, 0.2), transparent 38%);
+  color: white;
+  box-shadow: var(--shadow-lg);
+}
+
+.pre-arrival-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(120deg, rgba(255, 255, 255, 0.045), transparent 36%),
+    repeating-linear-gradient(
+      130deg,
+      rgba(255, 255, 255, 0.022) 0 1px,
+      transparent 1px 82px
+    );
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+.pre-arrival-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.pre-arrival-content h2 {
+  max-width: 780px;
+  margin: 0 0 18px;
+  color: white;
+  font-family: var(--font-heading);
+  font-size: clamp(2.2rem, 4vw, 4.4rem);
+  font-weight: 500;
+  line-height: 0.95;
+  text-transform: uppercase;
+}
+
+.pre-arrival-content p:not(.eyebrow) {
+  max-width: 760px;
+  color: #d7cdbf;
+  font-size: var(--type-body-large);
+  line-height: 1.65;
+}
+
+.pre-arrival-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 28px;
+}
+
+.pre-arrival-actions .btn {
+  gap: 8px;
+}
+
+.pre-arrival-actions .btn-secondary {
+  color: white;
+  border-color: rgba(255, 255, 255, 0.58);
+  background: transparent;
+}
+
+.pre-arrival-actions .btn-secondary:hover {
+  background: white;
+  color: var(--color-black);
+  border-color: white;
+}
+
+.pre-arrival-highlights {
+  display: grid;
+  gap: 16px;
+  align-content: center;
+}
+
+.pre-arrival-highlight {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 78px;
+  padding: 18px;
+  border: 1px solid rgba(184, 137, 58, 0.32);
+  border-radius: var(--radius);
+  background: rgba(255, 253, 249, 0.06);
+  color: white;
+}
+
+.pre-arrival-highlight svg {
+  color: var(--color-gold);
+  flex: 0 0 auto;
+}
+
+.pre-arrival-highlight span {
+  font-size: 0.82rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  line-height: 1.35;
+  text-transform: uppercase;
+}
+
+/* =========================
    CURATED STONE SECTION
 ========================= */
 
@@ -590,6 +708,14 @@
     border-right: 0;
   }
 
+  .pre-arrival-card {
+    grid-template-columns: 1fr;
+  }
+
+  .pre-arrival-highlights {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
   .featured-slab-grid,
   .audience-grid {
     grid-template-columns: 1fr;
@@ -664,6 +790,31 @@
 
   .feature-strip-item:last-child {
     border-bottom: 0;
+  }
+
+  .pre-arrival-section {
+    padding: 24px 0;
+  }
+
+  .pre-arrival-card {
+    width: min(100% - 28px, var(--container));
+    padding: 28px 22px;
+  }
+
+  .pre-arrival-content h2 {
+    font-size: clamp(2.2rem, 11vw, 3.6rem);
+  }
+
+  .pre-arrival-actions {
+    flex-direction: column;
+  }
+
+  .pre-arrival-actions .btn {
+    width: 100%;
+  }
+
+  .pre-arrival-highlights {
+    grid-template-columns: 1fr;
   }
 
   .featured-footer-action,

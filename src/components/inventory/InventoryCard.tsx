@@ -60,7 +60,7 @@ function InventoryCard({ slab }: InventoryCardProps) {
             <ArrowRight size={16} />
           </Link>
 
-          <a href="tel:8015550199" className="btn btn-primary">
+          <a href="tel:8014009496" className="btn btn-primary">
             Call for Pricing
           </a>
         </div>

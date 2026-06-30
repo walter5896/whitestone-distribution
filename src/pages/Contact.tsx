@@ -18,25 +18,25 @@ const contactCards = [
   {
     icon: Phone,
     title: "Call the Showroom",
-    text: "(801) 555-0199",
+    text: "(801) 400-9496",
     detail:
       "For fastest availability checks, slab holds, and pricing questions, call directly.",
     actionLabel: "Call Now",
-    href: "tel:8015550199",
+    href: "tel:8014009496",
   },
   {
     icon: Mail,
     title: "Email Whitestone",
-    text: "sales@whitestonedistribution.com",
+    text: "uvgutah@gmail.com",
     detail:
       "Send project details, slab names, or general questions and we’ll follow up.",
     actionLabel: "Send Email",
-    href: "mailto:sales@whitestonedistribution.com",
+    href: "mailto:uvgutah@gmail.com",
   },
   {
     icon: MapPin,
     title: "Visit by Appointment",
-    text: "Utah Valley, Utah",
+    text: "1616 S State Street, Provo, Utah",
     detail:
       "Schedule a visit to view slabs, confirm selections, and coordinate next steps.",
     actionLabel: "Get Directions",
@@ -103,7 +103,7 @@ export function Contact() {
             </div>
 
             <div className="contact-hero-actions">
-              <a href="tel:8015550199" className="btn btn-primary">
+              <a href="tel:8014009496" className="btn btn-primary">
                 <Phone size={18} />
                 Call to Reserve
               </a>
@@ -210,9 +210,9 @@ export function Contact() {
                 availability and pricing information.
               </p>
 
-              <a href="tel:8015550199">
+              <a href="tel:8014009496">
                 <Phone size={18} />
-                (801) 555-0199
+                (801) 400-9496
               </a>
 
               <span>
@@ -343,7 +343,7 @@ export function Contact() {
           </p>
 
           <div className="contact-final-actions">
-            <a href="tel:8015550199" className="btn btn-primary">
+            <a href="tel:8014009496" className="btn btn-primary">
               <Phone size={18} />
               Call to Reserve
             </a>
