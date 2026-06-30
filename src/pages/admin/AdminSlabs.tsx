@@ -70,6 +70,13 @@ type AdminSlabFormState = {
   styleTags: string;
   internalNotes: string;
   primaryImageUrl: string;
+  bundleId: string;
+  blockId: string;
+  qualityGrade: string;
+  averageSize: string;
+  areaSqft: string;
+  weight: string;
+  slabNumbers: string;
 };
 
 type AdminSlabCreateFormState = AdminSlabFormState & {
@@ -94,6 +101,13 @@ function createDefaultCreateFormState(): AdminSlabCreateFormState {
     styleTags: "",
     internalNotes: "",
     primaryImageUrl: "",
+    bundleId: "",
+    blockId: "",
+    qualityGrade: "",
+    averageSize: "",
+    areaSqft: "",
+    weight: "",
+    slabNumbers: "",
     isActive: true,
     isFeatured: false,
     isNewArrival: true,
@@ -144,6 +158,13 @@ function createEditFormState(slab: AdminSlab): AdminSlabFormState {
     styleTags: slab.styleTags.join(", "),
     internalNotes: slab.internalNotes || "",
     primaryImageUrl: slab.primaryImageUrl || slab.imageUrl || "",
+    bundleId: slab.bundleId || "",
+    blockId: slab.blockId || "",
+    qualityGrade: slab.qualityGrade || "",
+    averageSize: slab.averageSize || "",
+    areaSqft: slab.areaSqft || "",
+    weight: slab.weight || "",
+    slabNumbers: slab.slabNumbers || "",
   };
 }
 
@@ -261,6 +282,13 @@ export function AdminSlabs() {
         slab.inventoryType,
         slab.description,
         slab.internalNotes,
+        slab.bundleId,
+        slab.blockId,
+        slab.qualityGrade,
+        slab.averageSize,
+        slab.areaSqft,
+        slab.weight,
+        slab.slabNumbers,
         ...slab.styleTags,
       ]
         .filter(Boolean)
@@ -461,6 +489,13 @@ export function AdminSlabs() {
         style_tags: parseStyleTags(createForm.styleTags),
         internal_notes: createForm.internalNotes.trim() || null,
         primary_image_url: uploadedImageUrl || null,
+        bundle_id: createForm.bundleId.trim() || null,
+        block_id: createForm.blockId.trim() || null,
+        quality_grade: createForm.qualityGrade.trim() || null,
+        average_size: createForm.averageSize.trim() || null,
+        area_sqft: createForm.areaSqft.trim() || null,
+        weight: createForm.weight.trim() || null,
+        slab_numbers: createForm.slabNumbers.trim() || null,
         is_active: createForm.isActive,
         is_featured: createForm.isFeatured,
         is_new_arrival: createForm.isNewArrival,
@@ -554,6 +589,13 @@ export function AdminSlabs() {
         style_tags: parseStyleTags(editForm.styleTags),
         internal_notes: editForm.internalNotes.trim() || null,
         primary_image_url: uploadedImageUrl || editForm.primaryImageUrl || null,
+        bundle_id: editForm.bundleId.trim() || null,
+        block_id: editForm.blockId.trim() || null,
+        quality_grade: editForm.qualityGrade.trim() || null,
+        average_size: editForm.averageSize.trim() || null,
+        area_sqft: editForm.areaSqft.trim() || null,
+        weight: editForm.weight.trim() || null,
+        slab_numbers: editForm.slabNumbers.trim() || null,
       });
 
       replaceSlabInState(updatedSlab);
@@ -1053,6 +1095,100 @@ export function AdminSlabs() {
                   </select>
                 </label>
 
+                <div className="admin-form-span-2 admin-form-section-heading">
+                  <p className="eyebrow">Supplier Inventory Details</p>
+                  <h3>Bundle / Block Information</h3>
+                  <p>
+                    Optional supplier-style fields for bundle tracking, slab
+                    counts, average sizing, and fabricator-ready inventory
+                    details.
+                  </p>
+                </div>
+
+                <label>
+                  Bundle ID
+                  <input
+                    type="text"
+                    value={createForm.bundleId}
+                    onChange={(event) =>
+                      updateCreateForm("bundleId", event.target.value)
+                    }
+                    placeholder="BD0018347"
+                  />
+                </label>
+
+                <label>
+                  Block ID
+                  <input
+                    type="text"
+                    value={createForm.blockId}
+                    onChange={(event) =>
+                      updateCreateForm("blockId", event.target.value)
+                    }
+                    placeholder="20383"
+                  />
+                </label>
+
+                <label>
+                  Quality / Grade
+                  <input
+                    type="text"
+                    value={createForm.qualityGrade}
+                    onChange={(event) =>
+                      updateCreateForm("qualityGrade", event.target.value)
+                    }
+                    placeholder="Premium"
+                  />
+                </label>
+
+                <label>
+                  Average Size
+                  <input
+                    type="text"
+                    value={createForm.averageSize}
+                    onChange={(event) =>
+                      updateCreateForm("averageSize", event.target.value)
+                    }
+                    placeholder="125.59 in x 74.02 in"
+                  />
+                </label>
+
+                <label>
+                  Area / Square Footage
+                  <input
+                    type="text"
+                    value={createForm.areaSqft}
+                    onChange={(event) =>
+                      updateCreateForm("areaSqft", event.target.value)
+                    }
+                    placeholder="516.4 ft²"
+                  />
+                </label>
+
+                <label>
+                  Weight
+                  <input
+                    type="text"
+                    value={createForm.weight}
+                    onChange={(event) =>
+                      updateCreateForm("weight", event.target.value)
+                    }
+                    placeholder="2880.7 kg"
+                  />
+                </label>
+
+                <label className="admin-form-span-2">
+                  Slab Numbers / Count
+                  <input
+                    type="text"
+                    value={createForm.slabNumbers}
+                    onChange={(event) =>
+                      updateCreateForm("slabNumbers", event.target.value)
+                    }
+                    placeholder="8 slabs | 1, 2, 3, 4, 5, 6, 7, 8"
+                  />
+                </label>
+
                 <div className="admin-form-span-2 admin-file-upload-field">
                   <span>Main Slab Image</span>
 
@@ -1253,6 +1389,26 @@ export function AdminSlabs() {
                       <div>
                         <span>Dimensions</span>
                         <strong>{slab.dimensions || "Not listed"}</strong>
+                      </div>
+
+                      <div>
+                        <span>Bundle</span>
+                        <strong>{slab.bundleId || "Not listed"}</strong>
+                      </div>
+
+                      <div>
+                        <span>Block</span>
+                        <strong>{slab.blockId || "Not listed"}</strong>
+                      </div>
+
+                      <div>
+                        <span>Quality</span>
+                        <strong>{slab.qualityGrade || "Not listed"}</strong>
+                      </div>
+
+                      <div>
+                        <span>Available Slabs</span>
+                        <strong>{slab.slabNumbers || "Not listed"}</strong>
                       </div>
 
                       <div>
@@ -1474,6 +1630,103 @@ export function AdminSlabs() {
                                 </option>
                               ))}
                             </select>
+                          </label>
+
+                          <div className="admin-form-span-2 admin-form-section-heading">
+                            <p className="eyebrow">Supplier Inventory Details</p>
+                            <h3>Bundle / Block Information</h3>
+                            <p>
+                              Optional supplier-style fields for bundle tracking,
+                              slab counts, average sizing, and fabricator-ready
+                              inventory details.
+                            </p>
+                          </div>
+
+                          <label>
+                            Bundle ID
+                            <input
+                              type="text"
+                              value={editForm.bundleId}
+                              onChange={(event) =>
+                                updateEditForm("bundleId", event.target.value)
+                              }
+                              placeholder="BD0018347"
+                            />
+                          </label>
+
+                          <label>
+                            Block ID
+                            <input
+                              type="text"
+                              value={editForm.blockId}
+                              onChange={(event) =>
+                                updateEditForm("blockId", event.target.value)
+                              }
+                              placeholder="20383"
+                            />
+                          </label>
+
+                          <label>
+                            Quality / Grade
+                            <input
+                              type="text"
+                              value={editForm.qualityGrade}
+                              onChange={(event) =>
+                                updateEditForm(
+                                  "qualityGrade",
+                                  event.target.value
+                                )
+                              }
+                              placeholder="Premium"
+                            />
+                          </label>
+
+                          <label>
+                            Average Size
+                            <input
+                              type="text"
+                              value={editForm.averageSize}
+                              onChange={(event) =>
+                                updateEditForm("averageSize", event.target.value)
+                              }
+                              placeholder="125.59 in x 74.02 in"
+                            />
+                          </label>
+
+                          <label>
+                            Area / Square Footage
+                            <input
+                              type="text"
+                              value={editForm.areaSqft}
+                              onChange={(event) =>
+                                updateEditForm("areaSqft", event.target.value)
+                              }
+                              placeholder="516.4 ft²"
+                            />
+                          </label>
+
+                          <label>
+                            Weight
+                            <input
+                              type="text"
+                              value={editForm.weight}
+                              onChange={(event) =>
+                                updateEditForm("weight", event.target.value)
+                              }
+                              placeholder="2880.7 kg"
+                            />
+                          </label>
+
+                          <label className="admin-form-span-2">
+                            Slab Numbers / Count
+                            <input
+                              type="text"
+                              value={editForm.slabNumbers}
+                              onChange={(event) =>
+                                updateEditForm("slabNumbers", event.target.value)
+                              }
+                              placeholder="8 slabs | 1, 2, 3, 4, 5, 6, 7, 8"
+                            />
                           </label>
 
                           <div className="admin-form-span-2 admin-file-upload-field">

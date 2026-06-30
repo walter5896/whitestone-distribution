@@ -18,6 +18,15 @@ export const mockSlabs: Slab[] = [
     description:
       "Warm cream quartzite with soft gold movement, ideal for luxury kitchens and large islands.",
     visualClass: "slab-visual-taj",
+
+    bundleId: "",
+    blockId: "",
+    qualityGrade: "",
+    averageSize: "",
+    areaSqft: "",
+    weight: "",
+    slabNumbers: "",
+
     imageUrl: "/images/slabs/taj-mahal-quartzite.png",
     images: [
       {
@@ -49,6 +58,15 @@ export const mockSlabs: Slab[] = [
     description:
       "Bright white marble with gold and gray veining for refined statement spaces.",
     visualClass: "slab-visual-calacatta",
+
+    bundleId: "",
+    blockId: "",
+    qualityGrade: "",
+    averageSize: "",
+    areaSqft: "",
+    weight: "",
+    slabNumbers: "",
+
     imageUrl: "/images/slabs/calacatta-gold-marble.png",
     images: [
       {
@@ -80,6 +98,15 @@ export const mockSlabs: Slab[] = [
     description:
       "Dark dramatic granite with sweeping movement and warm metallic accents.",
     visualClass: "slab-visual-black",
+
+    bundleId: "",
+    blockId: "",
+    qualityGrade: "",
+    averageSize: "",
+    areaSqft: "",
+    weight: "",
+    slabNumbers: "",
+
     imageUrl: "/images/slabs/black-fusion-granite.png",
     images: [
       {
@@ -111,6 +138,15 @@ export const mockSlabs: Slab[] = [
     description:
       "Rare green-blue exotic stone for bold feature walls, islands, and custom statement pieces.",
     visualClass: "slab-visual-green",
+
+    bundleId: "",
+    blockId: "",
+    qualityGrade: "",
+    averageSize: "",
+    areaSqft: "",
+    weight: "",
+    slabNumbers: "",
+
     imageUrl: "/images/slabs/emerald-exotic-stone.png",
     images: [
       {

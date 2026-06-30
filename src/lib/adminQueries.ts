@@ -231,6 +231,14 @@ export type AdminSlabUpdatePayload = Partial<{
   is_active: boolean;
   style_tags: string[] | null;
   primary_image_url: string | null;
+
+  bundle_id: string | null;
+  block_id: string | null;
+  quality_grade: string | null;
+  average_size: string | null;
+  area_sqft: string | null;
+  weight: string | null;
+  slab_numbers: string | null;
 }>;
 
 export type AdminSlabCreatePayload = {
@@ -250,6 +258,14 @@ export type AdminSlabCreatePayload = {
   is_active?: boolean;
   style_tags?: string[] | null;
   primary_image_url?: string | null;
+
+  bundle_id?: string | null;
+  block_id?: string | null;
+  quality_grade?: string | null;
+  average_size?: string | null;
+  area_sqft?: string | null;
+  weight?: string | null;
+  slab_numbers?: string | null;
 };
 
 export type CreateAdminSlabImagePayload = {
@@ -441,6 +457,15 @@ export async function createAdminSlab(payload: AdminSlabCreatePayload) {
       is_active: payload.is_active ?? true,
       style_tags: payload.style_tags ?? [],
       primary_image_url: payload.primary_image_url ?? null,
+
+      bundle_id: payload.bundle_id ?? null,
+      block_id: payload.block_id ?? null,
+      quality_grade: payload.quality_grade ?? null,
+      average_size: payload.average_size ?? null,
+      area_sqft: payload.area_sqft ?? null,
+      weight: payload.weight ?? null,
+      slab_numbers: payload.slab_numbers ?? null,
+
       created_at: now,
       updated_at: now,
     })

@@ -31,6 +31,18 @@ export type Slab = {
   visualClass: string;
 
   /**
+   * Supplier-style inventory fields.
+   * These support bundle/block tracking similar to stone supplier catalogs.
+   */
+  bundleId: string;
+  blockId: string;
+  qualityGrade: string;
+  averageSize: string;
+  areaSqft: string;
+  weight: string;
+  slabNumbers: string;
+
+  /**
    * Backward-compatible primary image.
    * Existing cards/pages can still use slab.imageUrl.
    */

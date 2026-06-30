@@ -32,6 +32,17 @@ export type SupabaseSlab = {
   created_at: string;
   updated_at: string;
 
+  /**
+   * Supplier-style inventory fields.
+   */
+  bundle_id: string | null;
+  block_id: string | null;
+  quality_grade: string | null;
+  average_size: string | null;
+  area_sqft: string | null;
+  weight: string | null;
+  slab_numbers: string | null;
+
   slab_images?: SupabaseSlabImage[] | null;
 };
 
@@ -87,6 +98,15 @@ export function mapSupabaseSlab(row: SupabaseSlab): Slab {
     styleTags: row.style_tags ?? [],
     description: row.description ?? "",
     visualClass: "",
+
+    bundleId: row.bundle_id ?? "",
+    blockId: row.block_id ?? "",
+    qualityGrade: row.quality_grade ?? "",
+    averageSize: row.average_size ?? "",
+    areaSqft: row.area_sqft ?? "",
+    weight: row.weight ?? "",
+    slabNumbers: row.slab_numbers ?? "",
+
     imageUrl: primaryImage,
     images: mappedImages,
   };

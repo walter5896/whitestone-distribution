@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { Phone } from "lucide-react";
 import { InventoryFilters } from "../components/inventory/InventoryFilters";
 import type { InventoryFiltersState } from "../components/inventory/InventoryFilters";
 import { InventoryGrid } from "../components/inventory/InventoryGrid";
@@ -209,6 +210,26 @@ export function LiveInventory() {
             <main className="inventory-main-column">
               <div className="inventory-main-top">
                 <PricingNotice />
+
+                <div className="inventory-pre-arrival-note">
+                  <div>
+                    <p className="eyebrow">Pre-Arrival Quartz & Marble</p>
+                    <h2>Incoming materials may be available for early savings.</h2>
+                    <p>
+                      Select incoming quartz and marble may qualify for
+                      pre-arrival savings. Holds, arrival timing, pricing, and
+                      color availability are handled directly by phone.
+                    </p>
+                  </div>
+
+                  <a
+                    href="tel:8014009496"
+                    className="inventory-pre-arrival-call"
+                  >
+                    <Phone size={17} />
+                    Call (801) 400-9496
+                  </a>
+                </div>
               </div>
 
               <div className="inventory-toolbar">
@@ -234,10 +255,7 @@ export function LiveInventory() {
               {isLoading && (
                 <div className="inventory-empty">
                   <h2>Loading Live Inventory...</h2>
-                  <p>
-                    Pulling current slab availability from Whitestone
-                    Distribution.
-                  </p>
+                  <p>Pulling current slab availability from WHITESTONE.</p>
                 </div>
               )}
 
